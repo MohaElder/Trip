@@ -1,0 +1,22 @@
+.paper {
+    position: relative
+}
+
+.delete-button {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    padding-right: 5px;
+    padding-bottom: 5px;
+}
+
+.editor{
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 30px;
+}
+
+/* .tool{
+    color: red;
+    box-shadow: 20;
+} */
