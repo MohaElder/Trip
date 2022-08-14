@@ -5,7 +5,7 @@ import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 import { Editor } from "react-draft-wysiwyg";
-import { EditorState, convertToRaw } from "draft-js";
+import { EditorState, convertToRaw, convertFromRaw } from "draft-js";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
@@ -34,7 +34,10 @@ const toolbarSetting = {
 //pnDeleteClicked prop type: https://stackoverflow.com/a/57511243
 function Note(props: { body: TypeNote, id: string, segment: string | undefined }) {
 
-    const [editorState, setEditorState] = useState(EditorState.createEmpty());
+    const [editorState, setEditorState] =
+        useState(
+            EditorState.
+                createWithContent(convertFromRaw(props.body.data)));
 
     const dispatch = useAppDispatch();
 
@@ -57,6 +60,7 @@ function Note(props: { body: TypeNote, id: string, segment: string | undefined }
     return (
         <Paper sx={{ minWidth: 275, minHeight: 400 }} className='paper'>
             <Editor
+                defaultEditorState={editorState}
                 editorClassName='editor'
                 toolbar={toolbarSetting}
                 editorState={editorState}

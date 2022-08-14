@@ -24,7 +24,8 @@ import Notes from '../../components/notes/notes';
 import './styles.css'
 
 export default function TripSegment(props: { tripSegments: Array<TypeTripSegment> }) {
-    const [activeTripSegmentName, setActiveTripSegmentName] = React.useState('');
+    const [activeTripSegmentName, setActiveTripSegmentName] = React.useState(
+        props.tripSegments[0].name);
     const [openTripSegmentDialog, setOpenTripSegmentDialog] = React.useState(false);
     const [newTripSegmentName, setNewTripSegmentName] = React.useState('');
 

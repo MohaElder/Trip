@@ -3,6 +3,8 @@ import { RootState, AppThunk } from '../../app/store';
 import Notes from '../../components/notes/notes';
 import type { Trip } from '../../data/Trip/Trip';
 import { trip } from '../../data/Trip/Trip';
+import { EditorState, convertToRaw } from "draft-js";
+import type { RawDraftContentState } from "draft-js"
 import { v4 as uuidv4 } from 'uuid';
 
 export interface TripState {
@@ -23,7 +25,7 @@ export const tripSlice = createSlice({
         addNote: (state) => {
             state.Trip.notes = [
                 ...state.Trip.notes,
-                { placeholder: 'write anything...', id: uuidv4(), data: {} }
+                { placeholder: 'write anything...', id: uuidv4(), data: convertToRaw(EditorState.createEmpty().getCurrentContent()) }
             ]
         },
 
@@ -34,12 +36,12 @@ export const tripSlice = createSlice({
             if (index != -1) {
                 state.Trip.tripSegments[index].notes = [
                     ...state.Trip.tripSegments[index].notes,
-                    { placeholder: 'write anything...', id: uuidv4(), data: {} }
+                    { placeholder: 'write anything...', id: uuidv4(), data: convertToRaw(EditorState.createEmpty().getCurrentContent()) }
                 ]
             }
         },
 
-        updateNote: (state, action: PayloadAction<{ id: string, data: Object }>) => {
+        updateNote: (state, action: PayloadAction<{ id: string, data: RawDraftContentState }>) => {
             let index = state.Trip.notes.findIndex((note) => {
                 return note.id == action.payload.id;
             })
@@ -50,7 +52,7 @@ export const tripSlice = createSlice({
         },
 
         updateNoteSegment: (state,
-            action: PayloadAction<{ id: string, data: Object, name: string }>) => {
+            action: PayloadAction<{ id: string, data: RawDraftContentState, name: string }>) => {
             let segmentIndex = state.Trip.tripSegments.findIndex((segment) => {
                 return segment.name == action.payload.name;
             })

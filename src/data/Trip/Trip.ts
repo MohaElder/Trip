@@ -1,6 +1,7 @@
 import type { Note } from '../Note/Note';
 
 import { v4 as uuidv4 } from 'uuid';
+import { EditorState, convertToRaw } from "draft-js";
 
 export type TripSegment = {
     name: string;
@@ -28,12 +29,12 @@ var trip: Trip = {
         {
             id: uuidv4(),
             placeholder: 'I wanna go to...',
-            data: {},
+            data: convertToRaw(EditorState.createEmpty().getCurrentContent()),
         },
         {
             id: uuidv4(),
             placeholder: 'I wanna do...',
-            data: {},
+            data: convertToRaw(EditorState.createEmpty().getCurrentContent()),
         },
     ],
     budgets: [],
@@ -42,7 +43,26 @@ var trip: Trip = {
             name: 'San Diego - Seattle',
             startDate: "May",
             endDate: "June",
-            notes: [],
+            notes: [{
+                id: uuidv4(),
+                placeholder: 'I wanna go to...',
+                data: convertToRaw(EditorState.createEmpty().getCurrentContent()),
+            },
+            {
+                id: uuidv4(),
+                placeholder: 'I want to...',
+                data: convertToRaw(EditorState.createEmpty().getCurrentContent()),
+            },
+            {
+                id: uuidv4(),
+                placeholder: 'I wanna eat...',
+                data: convertToRaw(EditorState.createEmpty().getCurrentContent()),
+            },
+            {
+                id: uuidv4(),
+                placeholder: 'I wanna stay at...',
+                data: convertToRaw(EditorState.createEmpty().getCurrentContent()),
+            }],
             budgets: [],
             itineraries: []
         }
