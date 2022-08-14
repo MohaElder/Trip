@@ -68,7 +68,7 @@ function Note(props: { body: TypeNote, id: string, segment: string | undefined }
                 placeholder={props.body.placeholder}
             />
             <div className='delete-button' >
-                <IconButton aria-label="delete"
+                <IconButton aria-label="delete" color="error"
                     onClick={() => {
                         props.segment == undefined ?
                             dispatch(deleteNote({ id: props.id })) :
