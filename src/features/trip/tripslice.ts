@@ -27,6 +27,18 @@ export const tripSlice = createSlice({
             ]
         },
 
+        addNoteSegment: (state, action: PayloadAction<{ name: string }>) => {
+            let index = state.Trip.tripSegments.findIndex((segment) => {
+                return segment.name == action.payload.name;
+            })
+            if (index != -1) {
+                state.Trip.tripSegments[index].notes = [
+                    ...state.Trip.tripSegments[index].notes,
+                    { placeholder: 'write anything...', id: uuidv4(), data: {} }
+                ]
+            }
+        },
+
         updateNote: (state, action: PayloadAction<{ id: string, data: Object }>) => {
             let index = state.Trip.notes.findIndex((note) => {
                 return note.id == action.payload.id;
@@ -37,16 +49,55 @@ export const tripSlice = createSlice({
             }
         },
 
+        updateNoteSegment: (state,
+            action: PayloadAction<{ id: string, data: Object, name: string }>) => {
+            let segmentIndex = state.Trip.tripSegments.findIndex((segment) => {
+                return segment.name == action.payload.name;
+            })
+            if (segmentIndex != -1) {
+                let index = state.Trip.tripSegments[segmentIndex].notes.findIndex((note) => {
+                    return note.id == action.payload.id;
+                })
+                //-1 means not found, so we don't handle
+                if (index != -1) {
+                    state.Trip.tripSegments[segmentIndex].notes[index].data = action.payload.data;
+                }
+            }
+        },
+
         deleteNote: (state, action: PayloadAction<{ id: string }>) => {
             state.Trip.notes = state.Trip.notes
                 .filter((note) => {
                     return note.id !== action.payload.id;
                 })
+        },
+
+        deleteNoteSegment: (state, action: PayloadAction<{ id: string, name: string }>) => {
+            let segmentIndex = state.Trip.tripSegments.findIndex((segment) => {
+                return segment.name == action.payload.name;
+            })
+            if (segmentIndex != -1) {
+                state.Trip.tripSegments[segmentIndex].notes = state.Trip.tripSegments[segmentIndex].notes
+                    .filter((note) => {
+                        return note.id !== action.payload.id;
+                    })
+            }
+
+        },
+
+        addSegment: (state, action: PayloadAction<{ name: string }>) => {
+            state.Trip.tripSegments = [
+                ...state.Trip.tripSegments,
+                {
+                    name: action.payload.name, startDate: "May", endDate: "June", notes: [],
+                    budgets: [], itineraries: []
+                }
+            ]
         }
     },
 });
 
-export const { addNote, updateNote, deleteNote } = tripSlice.actions;
+export const { addNote, addNoteSegment, updateNote, updateNoteSegment, deleteNote, deleteNoteSegment, addSegment } = tripSlice.actions;
 
 export const selectTrip = (state: RootState) => state.trip.tripReducer.Trip;
 

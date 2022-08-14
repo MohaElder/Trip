@@ -8,10 +8,11 @@ import type { Note as TypeNote } from '../../data/Note/Note'
 
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
 
-import { addNote } from '../../features/trip/tripslice';
+import { addNote, addNoteSegment } from '../../features/trip/tripslice';
 
 interface IProps {
-    notes: Array<TypeNote>
+    notes: Array<TypeNote>;
+    segment?: string;
 }
 
 const Notes: React.FC<IProps> = (props) => {
@@ -27,7 +28,7 @@ const Notes: React.FC<IProps> = (props) => {
 
     const noteGrids = notes.map((note) =>
         <Grid xs={4} key={note.id}>
-            <Note body={note} id={note.id} />
+            <Note body={note} id={note.id} segment={props.segment} />
         </Grid>
     );
 
@@ -37,8 +38,11 @@ const Notes: React.FC<IProps> = (props) => {
                 {noteGrids}
             </Grid>
             <Button className='note-button'
-                onClick={() =>
-                    dispatch(addNote())
+                onClick={() => {
+                    props.segment == undefined ?
+                        dispatch(addNote()) :
+                        dispatch(addNoteSegment({ name: props.segment }))
+                }
                 }
                 sx={{
                     borderStyle: 'dashed',

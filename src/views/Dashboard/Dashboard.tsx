@@ -9,7 +9,7 @@ interface IProps {
 
 const Dashboard: React.FC<IProps> = (props) => {
     return (
-        <div className='container'>
+        <div>
             <Typography variant="h5" gutterBottom component="div" className='title'>
                 Brainstorm Section
             </Typography>

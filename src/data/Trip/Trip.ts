@@ -2,7 +2,7 @@ import type { Note } from '../Note/Note';
 
 import { v4 as uuidv4 } from 'uuid';
 
-type TripSegment = {
+export type TripSegment = {
     name: string;
     startDate: string;
     endDate: string;
@@ -37,7 +37,16 @@ var trip: Trip = {
         },
     ],
     budgets: [],
-    tripSegments: []
+    tripSegments: [
+        {
+            name: 'San Diego - Seattle',
+            startDate: "May",
+            endDate: "June",
+            notes: [],
+            budgets: [],
+            itineraries: []
+        }
+    ]
 }
 
 export { trip }

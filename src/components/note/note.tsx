@@ -10,7 +10,7 @@ import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
 
-import { updateNote, deleteNote } from '../../features/trip/tripslice';
+import { updateNote, updateNoteSegment, deleteNote, deleteNoteSegment } from '../../features/trip/tripslice';
 
 import type { Note as TypeNote } from '../../data/Note/Note'
 
@@ -32,7 +32,7 @@ const toolbarSetting = {
 }
 
 //pnDeleteClicked prop type: https://stackoverflow.com/a/57511243
-function Note(props: { body: TypeNote, id: string }) {
+function Note(props: { body: TypeNote, id: string, segment: string | undefined }) {
 
     const [editorState, setEditorState] = useState(EditorState.createEmpty());
 
@@ -41,28 +41,40 @@ function Note(props: { body: TypeNote, id: string }) {
     const onEditorStateChange = (editorState: EditorState) => {
         setEditorState(editorState);
         //converToRaw to store the content as serialized object
-        dispatch(updateNote(
-            { id: props.id, data: convertToRaw(editorState.getCurrentContent())}
+        props.segment == undefined ?
+            dispatch(updateNote(
+                { id: props.id, data: convertToRaw(editorState.getCurrentContent()) }
+            )) :
+            dispatch(updateNoteSegment(
+                {
+                    id: props.id,
+                    data: convertToRaw(editorState.getCurrentContent()),
+                    name: props.segment
+                }
             ));
-};
+    };
 
-return (
-    <Paper sx={{ minWidth: 275, minHeight: 400 }} className='paper'>
-        <Editor
-            editorClassName='editor'
-            toolbar={toolbarSetting}
-            editorState={editorState}
-            onEditorStateChange={onEditorStateChange}
-            placeholder={props.body.placeholder}
-        />
-        <div className='delete-button' >
-            <IconButton aria-label="delete"
-                onClick={() => dispatch(deleteNote({ id: props.id }))}>
-                <DeleteIcon />
-            </IconButton>
-        </div>
-    </Paper>
-);
+    return (
+        <Paper sx={{ minWidth: 275, minHeight: 400 }} className='paper'>
+            <Editor
+                editorClassName='editor'
+                toolbar={toolbarSetting}
+                editorState={editorState}
+                onEditorStateChange={onEditorStateChange}
+                placeholder={props.body.placeholder}
+            />
+            <div className='delete-button' >
+                <IconButton aria-label="delete"
+                    onClick={() => {
+                        props.segment == undefined ?
+                            dispatch(deleteNote({ id: props.id })) :
+                            dispatch(deleteNoteSegment({ id: props.id, name: props.segment }))
+                    }}>
+                    <DeleteIcon />
+                </IconButton>
+            </div>
+        </Paper>
+    );
 }
 
 export default Note;
