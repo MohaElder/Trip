@@ -9,13 +9,12 @@ import { EditorState, convertToRaw } from "draft-js";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
-import {
-    update,
-} from '../../features/note/noteSlice';
+
+import { updateNote, deleteNote } from '../../features/trip/tripslice';
+
+import type { Note as TypeNote } from '../../data/Note/Note'
 
 import "./style.css"
-
-// const count = useAppSelector(selectCount);
 
 const toolbarSetting = {
     options: ['inline', 'list', 'history'],
@@ -33,7 +32,7 @@ const toolbarSetting = {
 }
 
 //pnDeleteClicked prop type: https://stackoverflow.com/a/57511243
-function Note(props: { placeholder: string, id: string, onDeleteClicked: Function }) {
+function Note(props: { body: TypeNote, id: string }) {
 
     const [editorState, setEditorState] = useState(EditorState.createEmpty());
 
@@ -42,25 +41,28 @@ function Note(props: { placeholder: string, id: string, onDeleteClicked: Functio
     const onEditorStateChange = (editorState: EditorState) => {
         setEditorState(editorState);
         //converToRaw to store the content as serialized object
-        dispatch(update(convertToRaw(editorState.getCurrentContent())))
-    };
+        dispatch(updateNote(
+            { id: props.id, data: convertToRaw(editorState.getCurrentContent())}
+            ));
+};
 
-    return (
-        <Paper sx={{ minWidth: 275, minHeight: 400 }} className='paper'>
-            <Editor
-                editorClassName='editor'
-                toolbar={toolbarSetting}
-                editorState={editorState}
-                onEditorStateChange={onEditorStateChange}
-                placeholder={props.placeholder}
-            />
-            <div className='delete-button' >
-                <IconButton aria-label="delete" onClick={() => props.onDeleteClicked(props.id)}>
-                    <DeleteIcon />
-                </IconButton>
-            </div>
-        </Paper>
-    );
+return (
+    <Paper sx={{ minWidth: 275, minHeight: 400 }} className='paper'>
+        <Editor
+            editorClassName='editor'
+            toolbar={toolbarSetting}
+            editorState={editorState}
+            onEditorStateChange={onEditorStateChange}
+            placeholder={props.body.placeholder}
+        />
+        <div className='delete-button' >
+            <IconButton aria-label="delete"
+                onClick={() => dispatch(deleteNote({ id: props.id }))}>
+                <DeleteIcon />
+            </IconButton>
+        </div>
+    </Paper>
+);
 }
 
 export default Note;

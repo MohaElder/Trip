@@ -1,0 +1,16 @@
+"trip":{
+    "name": "Project Alaska",
+    "start-date": "2022-6-22",
+    "end-date": "2022-7-24",
+    "notes": [],
+    "trip-segments":[
+        {
+            "name": "San Diego - Seattle",
+            "start-date": "2022-6-22",
+            "end-date": "2022-6-30",
+            "notes": [],
+            "budgets": [],
+            "itineraries": [],
+        }
+    ]
+}
