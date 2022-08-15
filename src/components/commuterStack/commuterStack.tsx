@@ -59,8 +59,7 @@ export default function CommuteStack(props: { segmentName: string, itineraryId: 
         ['Metro', <SubwayIcon />],
         ['Bike', <DirectionsBikeIcon />],
         ['Motorcycle', <TwoWheelerIcon />]
-    ]
-    )
+    ])
 
     const rideButtons = () => {
         let ret: JSX.Element[] = []

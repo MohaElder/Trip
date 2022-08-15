@@ -12,7 +12,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import { Stack } from '@mui/system';
+
 import Typography from '@mui/material/Typography';
 import Button from "@mui/material/Button"
 import AddIcon from '@mui/icons-material/Add';
@@ -20,22 +20,16 @@ import AddIcon from '@mui/icons-material/Add';
 import type { Itinerary } from '../../data/Itinerary/Itinerary';
 import type { TripSegment } from '../../data/Trip/Trip';
 
-import { StayInfo } from '../../data/StayInfo/StayInfo';
+
 import CommuteStack from '../commuterStack/commuterStack';
+import StayStack from '../stayStack/stayStack';
 
 function parseDate(date: string): string {
     var toParse = new Date(date);
     return (toParse.getMonth() + 1) + '.' + toParse.getDate()
 }
 
-function StayStack(props: { stayInfo: StayInfo | null }) {
-    return (
-        props.stayInfo == null ? <></> :
-            <Stack>
-                {props.stayInfo.name}
-            </Stack>
-    );
-}
+
 
 export default function Calendar(props: { tripSegment: TripSegment }) {
     const tripSegment = props.tripSegment;
@@ -67,7 +61,7 @@ export default function Calendar(props: { tripSegment: TripSegment }) {
                     <TableCell>
                         <CommuteStack segmentName={tripSegment.name} commuteInfo={row.commuteInfo} itineraryId={row.id} />
                     </TableCell>
-                    <TableCell><StayStack stayInfo={row.stayInfo} /></TableCell>
+                    <TableCell><StayStack segmentName={tripSegment.name} stayInfo={row.stayInfo} itineraryId={row.id} /></TableCell>
                     <TableCell>{row.ps}</TableCell>
                 </TableRow>
                 <TableRow>
