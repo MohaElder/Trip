@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
 import { addSegment } from '../../features/trip/tripslice';
@@ -20,14 +20,17 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
 import Notes from '../../components/notes/notes';
-
+import Calendar from '../../components/calendar/calendar';
 import './styles.css'
 
 export default function TripSegment(props: { tripSegments: Array<TypeTripSegment> }) {
-    const [activeTripSegmentName, setActiveTripSegmentName] = React.useState(
-        props.tripSegments[0].name);
-    const [openTripSegmentDialog, setOpenTripSegmentDialog] = React.useState(false);
-    const [newTripSegmentName, setNewTripSegmentName] = React.useState('');
+    const [openTripSegmentDialog, setOpenTripSegmentDialog] = useState(props.tripSegments.length === 0);
+    const [newTripSegmentName, setNewTripSegmentName] = useState('');
+    const [activeTripSegmentName, setactiveTripSegmentName] = useState('Create a New Segment!');
+    const [activeTripSegment, setActiveTripSegment] = useState<TypeTripSegment | undefined>(undefined);
+    useEffect(() => { setActiveTripSegment(getTripSegment(activeTripSegmentName)) }, [props.tripSegments]);
+
+    const dispatch = useAppDispatch();
 
     const handleCloseTripSegmentDialog = () => {
         setOpenTripSegmentDialog(false);
@@ -35,35 +38,66 @@ export default function TripSegment(props: { tripSegments: Array<TypeTripSegment
 
     const handleChangeActiveTripSegment = (event: SelectChangeEvent) => {
         let value = event.target.value;
-        if (value == 'create' && props.tripSegments.length == 0) {
+        if (value === 'create' && props.tripSegments.length === 0) {
             setOpenTripSegmentDialog(true);
         }
         else {
-            setActiveTripSegmentName(value);
+            let index = props.tripSegments.findIndex((segment) => {
+                return segment.name === event.target.value;
+            });
+            if (index != -1) {
+                setactiveTripSegmentName(props.tripSegments[index].name);
+            }
         }
     };
 
-    const dispatch = useAppDispatch();
+    function getTripSegment(str: string) {
+        return props.tripSegments.find((segment) => {
+            return segment.name === str;
+        });
+    }
 
     const handleAddSegment = () => {
-        dispatch(addSegment({ name: newTripSegmentName }))
+        dispatch(addSegment({ name: newTripSegmentName }));
+        setactiveTripSegmentName(newTripSegmentName);
         handleCloseTripSegmentDialog();
     }
 
-    const TripSegmentMenus = props.tripSegments.length == 0 ?
+    const TripSegmentMenus = props.tripSegments.length === 0 ?
         <MenuItem value='create' key='None'>Create a trip segment!</MenuItem> : props.tripSegments.map((segment) =>
             <MenuItem value={segment.name} key={segment.name}>{segment.name}</MenuItem>
         );
 
-    function TripSegmentNotes() {
-        let notes = props.tripSegments.find((segment) => {
-            return segment.name == activeTripSegmentName;
-        })?.notes;
+    const TripSegmentContent = activeTripSegment === undefined ?
+        <div>No active trip segment</div> :
+        <div>
+            <Typography variant="h5" gutterBottom component="div" className='title'>
+                Brainstorm Section
+            </Typography>
+            <Notes notes={activeTripSegment.notes} segment={activeTripSegmentName} />
+            <Typography variant="h5" gutterBottom component="div" className='title' sx={{ paddingTop: 5 }}>
+                Trip Calendar
+            </Typography>
+            <Calendar tripSegment={activeTripSegment} />
+        </div>
 
-        return notes == undefined ?
-            <div>Error, notes not found</div> :
-            <Notes notes={notes} segment={activeTripSegmentName} />
-    }
+    const SegmentContent = props.tripSegments.length === 0 ? <></> :
+        <div>
+            <Grid>
+                <FormControl sx={{ m: 1, minWidth: 200 }}>
+                    <InputLabel>Active Segment</InputLabel>
+                    <Select
+                        value={activeTripSegmentName}
+                        onChange={handleChangeActiveTripSegment}
+                        autoWidth
+                        label="Active Segment"
+                    >
+                        {TripSegmentMenus}
+                    </Select>
+                </FormControl>
+            </Grid>
+            {TripSegmentContent}
+        </div>
 
     return (
         <div>
@@ -89,35 +123,15 @@ export default function TripSegment(props: { tripSegments: Array<TypeTripSegment
                 </DialogActions>
             </Dialog>
             <div className='button-container'>
-                <Grid>
+                <Grid  >
                     <Button sx={{ m: 1 }} variant="contained"
                         endIcon={<AddIcon />} color="success"
                         onClick={() => { setOpenTripSegmentDialog(true) }}>
                         NEW SEGMENT
                     </Button>
                 </Grid>
-                <Grid>
-                    <FormControl sx={{ m: 1, minWidth: 200 }}>
-                        <InputLabel>Active Segment</InputLabel>
-                        <Select
-                            value={activeTripSegmentName}
-                            onChange={handleChangeActiveTripSegment}
-                            autoWidth
-                            label="Active Segment"
-                        >
-                            {TripSegmentMenus}
-                        </Select>
-                    </FormControl>
-                </Grid>
-                <div>
-                    <Typography variant="h5" gutterBottom component="div" className='title'>
-                        Brainstorm Section
-                    </Typography>
-                    {TripSegmentNotes()}
-                </div>
-
             </div>
-
+            {SegmentContent}
         </div>
     );
 

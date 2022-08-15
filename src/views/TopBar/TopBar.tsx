@@ -30,7 +30,7 @@ export default function TopBar() {
                             Dashboard
                         </Button>
                     </Link>
-                    <Link to="/about">
+                    <Link to="/segment">
                         <Button
                             onClick={handleCloseNavMenu}
                             sx={{ my: 2, color: 'white', display: 'block' }}

@@ -5,3 +5,9 @@
 .container {
     padding-top: 20px;
 }
+
+.open-text {
+    color: #0078D4;
+    font-weight: 800;
+    text-decoration: underline;
+}

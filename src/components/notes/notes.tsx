@@ -6,7 +6,7 @@ import Button from "@mui/material/Button"
 import "./styles.css"
 import type { Note as TypeNote } from '../../data/Note/Note'
 
-import { useAppSelector, useAppDispatch } from '../../app/hooks';
+import { useAppDispatch } from '../../app/hooks';
 
 import { addNote, addNoteSegment } from '../../features/trip/tripslice';
 
