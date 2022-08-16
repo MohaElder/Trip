@@ -22,13 +22,12 @@ import AddIcon from '@mui/icons-material/Add';
 import type { Itinerary, DailyItinerary } from '../../data/Itinerary/Itinerary';
 import type { TripSegment } from '../../data/Trip/Trip';
 
-import { updateItinenary } from '../../features/trip/tripslice';
+import { updateItinenary, addItinenary } from '../../features/trip/tripslice';
 
 import CommuteStack from '../commuterStack/commuterStack';
 import StayStack from '../stayStack/stayStack';
 
 function parseDate(date: string): string {
-    console.log(date)
     var toParse = new Date(date);
     return (toParse.getMonth() + 1) + '.' + toParse.getDate()
 }
@@ -203,9 +202,13 @@ export default function Calendar(props: { tripSegment: TripSegment, segmentIndex
         <Row key={itinerary.date} row={itinerary} idx={idx} />
     ))
 
+    function handleNewItinenary() {
+        dispatch(addItinenary({ segmentIndex: props.segmentIndex }))
+    }
+
     return (
         <Paper sx={{ m: 5 }}>
-            <Button variant="contained" endIcon={<AddIcon />} sx={{ m: 1 }}>
+            <Button onClick={handleNewItinenary} variant="contained" endIcon={<AddIcon />} sx={{ m: 1 }}>
                 New Day
             </Button>
             <TableContainer component={Paper}>

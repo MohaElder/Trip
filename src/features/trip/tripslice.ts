@@ -173,8 +173,6 @@ export const tripSlice = createSlice({
                     departTime: action.payload.departTime,
                     arrivalTime: action.payload.arrivalTime,
                 }
-
-
             }
         },
 
@@ -206,7 +204,6 @@ export const tripSlice = createSlice({
             let newItinenary = structuredClone(itineraryTemplate);
             newItinenary.date = getLatestTripDate();
             newItinenary.id = uuidv4();
-            console.log(newItinenary)
 
             state.Trip.tripSegments = [
                 ...state.Trip.tripSegments,
@@ -236,14 +233,67 @@ export const tripSlice = createSlice({
                     ]
                 }
             ]
+        },
+
+        addItinenary: (state, action: PayloadAction<{ segmentIndex: number }>) => {
+            function getLatestTripDate(): string {
+                let length = state.Trip
+                    .tripSegments[action.payload.segmentIndex].itineraries.length;
+                if (length === 0) {
+                    return state.Trip
+                        .tripSegments[action.payload.segmentIndex].startDate;
+                }
+                let date = new Date(state.Trip
+                    .tripSegments[action.payload.segmentIndex]
+                    .itineraries[length - 1]
+                    .date);
+                date.setDate(date.getDate() + 1);
+                return date.toString();
+            }
+            state.Trip.tripSegments[action.payload.segmentIndex].itineraries = [
+                ...state.Trip.tripSegments[action.payload.segmentIndex].itineraries,
+                {
+                    id: uuidv4(),
+                    date: getLatestTripDate(),
+                    start: 'Start',
+                    end: 'End',
+                    tripInfo: 'Trip Info',
+                    commuteInfo: {
+                        ride: 'Car',
+                        departTime: '12:00',
+                        arrivalTime: '12:00'
+                    },
+                    stayInfo: {
+                        type: 'Hotel',
+                        name: 'Staying at...',
+                        location: '',
+                        price: 0
+                    },
+                    ps: 'side note',
+                    dailyItinerary: [
+                        {
+                            id: uuidv4(),
+                            date: '10:00',
+                            location: 'Address',
+                            tripInfo: 'Trip Info',
+                            commuteInfo: {
+                                ride: 'Car',
+                                departTime: '12:00',
+                                arrivalTime: '12:00'
+                            },
+                        }
+                    ]
+                }
+            ]
         }
     },
+
 });
 
 export const { updateTripInfo, addNote, addNoteSegment,
     updateNote, updateNoteSegment, deleteNote,
     deleteNoteSegment, addSegment, updateCommuteInfo,
-    updateStayInfo, updateItinenary } = tripSlice.actions;
+    updateStayInfo, updateItinenary, addItinenary } = tripSlice.actions;
 
 export const selectTrip = (state: RootState) => state.trip.tripReducer.Trip;
 
