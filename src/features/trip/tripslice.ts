@@ -80,7 +80,7 @@ export const tripSlice = createSlice({
 
         updateItinenary: (state, action: PayloadAction<{
             tripSegmentIndex: number, itinenaryIndex: number, start?: string,
-            end?: string, tripInfo?: string, ps?: string, date?: string
+            end?: string, tripInfo?: string, ps?: string, date?: string, open: boolean
         }>) => {
             let org = state.Trip
                 .tripSegments[action.payload.tripSegmentIndex]
@@ -88,6 +88,7 @@ export const tripSlice = createSlice({
             state.Trip
                 .tripSegments[action.payload.tripSegmentIndex]
                 .itineraries[action.payload.itinenaryIndex] = {
+                open: action.payload.open,
                 id: org.id,
                 date: action.payload.date === undefined ?
                     org.date : action.payload.date,
@@ -236,6 +237,7 @@ export const tripSlice = createSlice({
             state.Trip.tripSegments[action.payload.segmentIndex].itineraries = [
                 ...state.Trip.tripSegments[action.payload.segmentIndex].itineraries,
                 {
+                    open: false,
                     id: uuidv4(),
                     date: getLatestTripDate(),
                     start: 'Start',

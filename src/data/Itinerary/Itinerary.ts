@@ -3,6 +3,7 @@ import type { StayInfo } from "../StayInfo/StayInfo"
 
 export type Itinerary = {
     id: string;
+    open: boolean,
     date: string;
     start: string;
     end: string;

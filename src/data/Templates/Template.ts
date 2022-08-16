@@ -2,6 +2,7 @@ import type { Itinerary } from "../Itinerary/Itinerary";
 import type { TripSegment } from "../Trip/Trip";
 
 export const itineraryTemplate: Itinerary = {
+    open: false,
     id: '',
     date: '',
     start: 'The place you start the day',

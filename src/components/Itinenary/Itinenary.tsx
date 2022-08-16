@@ -35,7 +35,7 @@ export default function Itinenary(props: {
         return (toParse.getMonth() + 1) + '.' + toParse.getDate()
     }
 
-    const [open, setOpen] = React.useState(true);
+    const [open, setOpen] = React.useState(props.itinenary.open);
 
     const [editStart, setEditStart] = useState(false);
     const [editEnd, setEditEnd] = useState(false);
@@ -54,6 +54,7 @@ export default function Itinenary(props: {
             end: end,
             tripInfo: tripInfo,
             ps: ps,
+            open: !open,
         }))
         switch (type) {
             case 'start':
@@ -68,6 +69,9 @@ export default function Itinenary(props: {
             case 'ps':
                 setEditPs(false)
                 break;
+            case 'open':
+                setOpen(!open);
+                break;
             default:
                 break;
         }
@@ -81,7 +85,7 @@ export default function Itinenary(props: {
                         <IconButton
                             aria-label="expand row"
                             size="small"
-                            onClick={() => setOpen(!open)}
+                            onClick={() => {updateItinenaryInfo('open')}}
                         >
                             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
                         </IconButton>
@@ -165,6 +169,6 @@ export default function Itinenary(props: {
                     </Collapse>
                 </TableCell>
             </TableRow>
-        </React.Fragment>
+        </React.Fragment >
     );
 }
