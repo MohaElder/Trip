@@ -40,7 +40,7 @@ export default function TripSegment(props: { tripSegments: Array<TypeTripSegment
 
     const handleAddSegment = () => {
         dispatch(addSegment({ name: newTripSegmentName }));
-        setActiveTripSegmentIndex(props.tripSegments.length - 1);
+        setActiveTripSegmentIndex(props.tripSegments.length);
         handleCloseTripSegmentDialog();
     }
 
@@ -64,7 +64,7 @@ export default function TripSegment(props: { tripSegments: Array<TypeTripSegment
             <Typography variant="h5" gutterBottom component="div" className='title' sx={{ paddingTop: 5 }}>
                 Trip Calendar
             </Typography>
-            <Calendar tripSegment={props.tripSegments[activeTripSegmentIndex]} />
+            <Calendar tripSegment={props.tripSegments[activeTripSegmentIndex]} segmentIndex={activeTripSegmentIndex} />
         </div>
 
     return (

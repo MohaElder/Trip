@@ -7,7 +7,6 @@ import type { RawDraftContentState } from "draft-js"
 import { v4 as uuidv4 } from 'uuid';
 
 import { itineraryTemplate } from '../../data/Templates/Template';
-import type { Itinerary } from '../../data/Itinerary/Itinerary'
 import type { TripSegment } from '../../data/Trip/Trip';
 
 export interface TripState {
@@ -146,8 +145,8 @@ export const tripSlice = createSlice({
 
         updateCommuteInfo: (state,
             action: PayloadAction<{
-                segmentId: string,
-                itinenaryId: string,
+                segmentIndex: number,
+                itinenaryIndex: number,
                 dayItinenaryIndex?: number,
                 ride: string,
                 code: string,
@@ -155,77 +154,59 @@ export const tripSlice = createSlice({
                 departTime: string,
                 arrivalTime: string
             }>) => {
-            let index = state.Trip.tripSegments.findIndex((segment) => {
-                return segment.id == action.payload.segmentId;
-            })
-            //-1 means not found, so we don't handle
-            if (index != -1) {
-                let itIndex = state.Trip.tripSegments[index].
-                    itineraries.findIndex((it) => {
-                        return it.id === action.payload.itinenaryId;
-                    })
-                if (itIndex != -1) {
-                    if (action.payload.dayItinenaryIndex !== undefined) {
-                        state.Trip.tripSegments[index].itineraries[itIndex]
-                            .dailyItinerary[action.payload.dayItinenaryIndex].commuteInfo = {
-                            ride: action.payload.ride,
-                            code: action.payload.code,
-                            location: action.payload.location,
-                            departTime: action.payload.departTime,
-                            arrivalTime: action.payload.arrivalTime,
-                        }
-                    }
-                    else {
-                        state.Trip.tripSegments[index].itineraries[itIndex].commuteInfo = {
-                            ride: action.payload.ride,
-                            code: action.payload.code,
-                            location: action.payload.location,
-                            departTime: action.payload.departTime,
-                            arrivalTime: action.payload.arrivalTime,
-                        }
-                    }
+
+            if (action.payload.dayItinenaryIndex !== undefined) {
+                state.Trip.tripSegments[action.payload.segmentIndex].itineraries[action.payload.itinenaryIndex]
+                    .dailyItinerary[action.payload.dayItinenaryIndex].commuteInfo = {
+                    ride: action.payload.ride,
+                    code: action.payload.code,
+                    location: action.payload.location,
+                    departTime: action.payload.departTime,
+                    arrivalTime: action.payload.arrivalTime,
                 }
+            }
+            else {
+                state.Trip.tripSegments[action.payload.segmentIndex].itineraries[action.payload.itinenaryIndex].commuteInfo = {
+                    ride: action.payload.ride,
+                    code: action.payload.code,
+                    location: action.payload.location,
+                    departTime: action.payload.departTime,
+                    arrivalTime: action.payload.arrivalTime,
+                }
+
+
             }
         },
 
         updateStayInfo: (state,
             action: PayloadAction<{
-                segmentId: string, itinenaryId: string,
+                segmentIndex: number,
+                itinenaryIndex: number,
                 type: string, link: string,
                 name: string, location: string,
                 price: number
             }>) => {
-            let index = getSegmentIndex(state.Trip.tripSegments, action.payload.segmentId)
-            //-1 means not found, so we don't handle
-            if (index != -1) {
-                let itIndex = state.Trip.tripSegments[index].
-                    itineraries.findIndex((it) => {
-                        return it.id === action.payload.itinenaryId;
-                    })
-                if (itIndex != -1) {
-                    state.Trip.tripSegments[index].itineraries[itIndex].stayInfo = {
-                        type: action.payload.type,
-                        name: action.payload.name,
-                        price: action.payload.price,
-                        link: action.payload.link,
-                        location: action.payload.location,
-                    }
-                }
+            state.Trip.tripSegments[action.payload.segmentIndex].itineraries[action.payload.itinenaryIndex].stayInfo = {
+                type: action.payload.type,
+                name: action.payload.name,
+                price: action.payload.price,
+                link: action.payload.link,
+                location: action.payload.location,
             }
         },
 
         addSegment: (state, action: PayloadAction<{ name: string }>) => {
             function getLatestTripDate(): string {
                 let length = state.Trip.tripSegments.length;
-                return length == 0 ?
+                return length === 0 ?
                     state.Trip.startDate :
                     state.Trip.tripSegments[length - 1].endDate;
             }
 
-            //https://stackoverflow.com/a/728694/15466075
             let newItinenary = structuredClone(itineraryTemplate);
             newItinenary.date = getLatestTripDate();
             newItinenary.id = uuidv4();
+            console.log(newItinenary)
 
             state.Trip.tripSegments = [
                 ...state.Trip.tripSegments,

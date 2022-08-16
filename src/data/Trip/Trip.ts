@@ -25,8 +25,8 @@ export type Trip = {
             
 const trip: Trip = {
     name: "",
-    startDate: Date.toString(),
-    endDate: Date.toString(),
+    startDate: Date().toString(),
+    endDate: Date().toString(),
     notes: [
         {
             id: uuidv4(),
@@ -42,7 +42,7 @@ const trip: Trip = {
     budgets: [],
     tripSegments: [
         {
-            name: 'Default', id: uuidv4(), startDate: '', endDate: '', notes: [{
+            name: 'Default', id: uuidv4(), startDate: Date().toString(), endDate: Date().toString(), notes: [{
                 id: uuidv4(),
                 placeholder: 'I wanna go to...',
                 data: convertToRaw(EditorState.createEmpty().getCurrentContent()),

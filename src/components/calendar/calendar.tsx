@@ -28,16 +28,18 @@ import CommuteStack from '../commuterStack/commuterStack';
 import StayStack from '../stayStack/stayStack';
 
 function parseDate(date: string): string {
+    console.log(date)
     var toParse = new Date(date);
     return (toParse.getMonth() + 1) + '.' + toParse.getDate()
 }
 
-export default function Calendar(props: { tripSegment: TripSegment }) {
+export default function Calendar(props: { tripSegment: TripSegment, segmentIndex: number }) {
     const dispatch = useAppDispatch();
 
     const tripSegment = props.tripSegment;
+    const segmentIndex = props.segmentIndex;
 
-    function Row(props: { row: Itinerary }) {
+    function Row(props: { row: Itinerary, idx: number }) {
         const { row } = props;
         const [open, setOpen] = React.useState(true);
 
@@ -87,7 +89,7 @@ export default function Calendar(props: { tripSegment: TripSegment }) {
             setEditPs(false)
         }
 
-        function DayIt(props: { day: DailyItinerary, idx: number }) {
+        function DayIt(props: { day: DailyItinerary, itIdx: number, idx: number }) {
             return (<TableRow key={props.day.date}>
                 <TableCell component="th" scope="row">
                     {props.day.date}
@@ -95,7 +97,7 @@ export default function Calendar(props: { tripSegment: TripSegment }) {
                 <TableCell>{props.day.location}</TableCell>
                 <TableCell>{props.day.tripInfo}</TableCell>
                 <TableCell>
-                    <CommuteStack segmentId={tripSegment.id} commuteInfo={props.day.commuteInfo} itineraryIndex={props.idx} itineraryId={row.id} />
+                    <CommuteStack segmentIndex={segmentIndex} commuteInfo={props.day.commuteInfo} itineraryIndex={props.itIdx} dayItineraryIndex={props.idx} />
                 </TableCell>
             </TableRow>)
         }
@@ -148,9 +150,9 @@ export default function Calendar(props: { tripSegment: TripSegment }) {
                             <span onClick={() => { setEditTripInfo(true) }}>{tripInfo}</span>
                     }</TableCell>
                     <TableCell>
-                        <CommuteStack segmentId={tripSegment.id} commuteInfo={row.commuteInfo} itineraryId={row.id} />
+                        <CommuteStack segmentIndex={segmentIndex} commuteInfo={row.commuteInfo} itineraryIndex={props.idx} />
                     </TableCell>
-                    <TableCell><StayStack segmentId={tripSegment.id} stayInfo={row.stayInfo} itineraryId={row.id} /></TableCell>
+                    <TableCell><StayStack segmentIndex={segmentIndex} stayInfo={row.stayInfo} itineraryIndex={props.idx} /></TableCell>
                     <TableCell>{
                         editPs ?
                             <TextField
@@ -185,7 +187,7 @@ export default function Calendar(props: { tripSegment: TripSegment }) {
                                     </TableHead>
                                     <TableBody>
                                         {row.dailyItinerary.map((itinerary, idx) => (
-                                            <DayIt day={itinerary} key={idx} idx={idx} />
+                                            <DayIt day={itinerary} key={idx} idx={props.idx} itIdx={idx} />
                                         ))}
                                     </TableBody>
                                 </Table>
@@ -197,8 +199,8 @@ export default function Calendar(props: { tripSegment: TripSegment }) {
         );
     }
 
-    const rows = props.tripSegment.itineraries.map((itinerary) => (
-        <Row key={itinerary.date} row={itinerary} />
+    const rows = props.tripSegment.itineraries.map((itinerary, idx) => (
+        <Row key={itinerary.date} row={itinerary} idx={idx} />
     ))
 
     return (

@@ -38,9 +38,9 @@ import { CommuteInfo } from '../../data/CommuteInfo/CommuteInfo';
 import { updateCommuteInfo } from '../../features/trip/tripslice';
 
 export default function CommuteStack(props: {
-    segmentId: string,
-    itineraryId: string,
-    itineraryIndex?: number,
+    segmentIndex: number,
+    itineraryIndex: number,
+    dayItineraryIndex?: number,
     commuteInfo: CommuteInfo | null
 }) {
 
@@ -99,14 +99,14 @@ export default function CommuteStack(props: {
             && rideType !== undefined && code !== undefined
             && location !== undefined) {
             dispatch(updateCommuteInfo({
-                segmentId: props.segmentId,
-                itinenaryId: props.itineraryId,
+                segmentIndex: props.segmentIndex,
+                itinenaryIndex: props.itineraryIndex,
                 ride: rideType,
                 code: code,
                 location: location,
                 departTime: departTime,
                 arrivalTime: arrivalTime,
-                dayItinenaryIndex: props.itineraryIndex
+                dayItinenaryIndex: props.dayItineraryIndex
             }))
         }
     }

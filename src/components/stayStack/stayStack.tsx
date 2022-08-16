@@ -31,7 +31,11 @@ import CardActionArea from '@mui/material/CardActionArea/CardActionArea';
 import { updateStayInfo } from '../../features/trip/tripslice';
 import { StayInfo } from '../../data/StayInfo/StayInfo';
 
-export default function StayStack(props: { segmentId: string, itineraryId: string, stayInfo: StayInfo | null }) {
+export default function StayStack(props: {
+    segmentIndex: number,
+    itineraryIndex: number,
+    stayInfo: StayInfo | null
+}) {
 
     const dispatch = useAppDispatch();
 
@@ -65,11 +69,11 @@ export default function StayStack(props: { segmentId: string, itineraryId: strin
         setModifyStay(false);
 
         if (stayType !== undefined && link !== undefined
-            && name !== undefined && location !== undefined 
+            && name !== undefined && location !== undefined
             && price !== undefined) {
             dispatch(updateStayInfo({
-                segmentId: props.segmentId,
-                itinenaryId: props.itineraryId,
+                segmentIndex: props.segmentIndex,
+                itinenaryIndex: props.itineraryIndex,
                 type: stayType,
                 link: link,
                 name: name,
