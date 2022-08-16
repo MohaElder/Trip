@@ -13,9 +13,10 @@ export type Itinerary = {
     dailyItinerary: Array<DailyItinerary>
 }
 
-type DailyItinerary = {
+export type DailyItinerary = {
+    id: string;
     date: string;
     location: string;
     tripInfo: string;
-    commuteInfo: CommuteInfo;
+    commuteInfo: CommuteInfo | null;
 }

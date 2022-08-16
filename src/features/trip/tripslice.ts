@@ -7,6 +7,8 @@ import type { RawDraftContentState } from "draft-js"
 import { v4 as uuidv4 } from 'uuid';
 
 import { itineraryTemplate } from '../../data/Templates/Template';
+import type { Itinerary } from '../../data/Itinerary/Itinerary'
+import type { TripSegment } from '../../data/Trip/Trip';
 
 export interface TripState {
     Trip: Trip;
@@ -17,6 +19,12 @@ const initialState: TripState = {
     Trip: trip,
     status: 'welcome',
 };
+
+function getSegmentIndex(segments: Array<TripSegment>, id: string) {
+    return segments.findIndex((segment) => {
+        return segment.id == id;
+    })
+}
 
 export const tripSlice = createSlice({
     name: 'trip',
@@ -36,37 +44,80 @@ export const tripSlice = createSlice({
             ]
         },
 
-        addNoteSegment: (state, action: PayloadAction<{ name: string }>) => {
-            let index = state.Trip.tripSegments.findIndex((segment) => {
-                return segment.name == action.payload.name;
-            })
-            if (index != -1) {
-                state.Trip.tripSegments[index].notes = [
-                    ...state.Trip.tripSegments[index].notes,
-                    { placeholder: 'write anything...', id: uuidv4(), data: convertToRaw(EditorState.createEmpty().getCurrentContent()) }
-                ]
-            }
+        addNoteSegment: (state, action: PayloadAction<{ index: number }>) => {
+            state.Trip.tripSegments[action.payload.index].notes = [
+                ...state.Trip.tripSegments[action.payload.index].notes,
+                { placeholder: 'write anything...', id: uuidv4(), data: convertToRaw(EditorState.createEmpty().getCurrentContent()) }
+            ]
         },
 
-        updateNote: (state, action: PayloadAction<{ id: string, data: RawDraftContentState }>) => {
-            let index = state.Trip.notes.findIndex((note) => {
-                return note.id == action.payload.id;
-            })
+        updateNote: (state, action: PayloadAction<{
+            index: number,
+            data: RawDraftContentState
+        }>) => {
+            state.Trip.notes[action.payload.index].data = action.payload.data
+        },
+
+        updateNoteSegment: (state,
+            action: PayloadAction<{
+                segmentIndex: number,
+                noteIndex: number, data: RawDraftContentState
+            }>) => {
+            state.Trip.tripSegments[action.payload.segmentIndex].notes[action.payload.noteIndex].data = action.payload.data;
+        },
+
+        deleteNote: (state, action: PayloadAction<{ index: number }>) => {
+            state.Trip.notes.splice(action.payload.index, 1);
+        },
+
+        deleteNoteSegment: (state, action: PayloadAction<{
+            segmentIndex: number,
+            noteIndex: number
+        }>) => {
+            state.Trip.tripSegments[action.payload.segmentIndex]
+                .notes.splice(action.payload.noteIndex, 1);
+
+        },
+
+        updateItinenary: (state, action: PayloadAction<{
+            id: string, itinenaryId: string, start?: string,
+            end?: string, tripInfo?: string, ps?: string, date?: string
+        }>) => {
+            let index = getSegmentIndex(state.Trip.tripSegments, action.payload.id)
             //-1 means not found, so we don't handle
             if (index != -1) {
-                state.Trip.notes[index].data = action.payload.data;
+                let itIndex = state.Trip.tripSegments[index].
+                    itineraries.findIndex((it) => {
+                        return it.id === action.payload.itinenaryId;
+                    })
+                if (itIndex != -1) {
+                    let org = state.Trip.tripSegments[index].itineraries[itIndex];
+                    state.Trip.tripSegments[index].itineraries[itIndex] = {
+                        id: org.id,
+                        date: action.payload.date === undefined ?
+                            org.date : action.payload.date,
+                        start: action.payload.start === undefined ?
+                            org.start : action.payload.start,
+                        end: action.payload.end === undefined ?
+                            org.end : action.payload.end,
+                        tripInfo: action.payload.tripInfo === undefined ?
+                            org.tripInfo : action.payload.tripInfo,
+                        commuteInfo: org.commuteInfo,
+                        stayInfo: org.stayInfo,
+                        ps: action.payload.ps === undefined ?
+                            org.ps : action.payload.ps,
+                        dailyItinerary: org.dailyItinerary
+                    }
+                }
             }
         },
 
-        updateCommuteInfo: (state,
-            action: PayloadAction<{
-                segmentName: string, itinenaryId: string,
-                ride: string, code: string,
-                location: string, departTime: string,
-                arrivalTime: string
-            }>) => {
+        updateDayItinenary: (state, action: PayloadAction<{
+            id: string, itinenaryId: string, dayItinenaryIndex: number,
+            date?: string, location?: string, tripInfo?: string
+        }>) => {
             let index = state.Trip.tripSegments.findIndex((segment) => {
-                return segment.name === action.payload.segmentName;
+                return segment.id == action.payload.id;
             })
             //-1 means not found, so we don't handle
             if (index != -1) {
@@ -75,51 +126,92 @@ export const tripSlice = createSlice({
                         return it.id === action.payload.itinenaryId;
                     })
                 if (itIndex != -1) {
-                    state.Trip.tripSegments[index].itineraries[itIndex].commuteInfo={
-                        ride: action.payload.ride,
-                        code: action.payload.code,
-                        location: action.payload.location,
-                        departTime: action.payload.departTime,
-                        arrivalTime: action.payload.arrivalTime,
+                    let org = state.Trip.tripSegments[index]
+                        .itineraries[itIndex].dailyItinerary[action.payload.dayItinenaryIndex];
+                    state.Trip.tripSegments[index]
+                        .itineraries[itIndex]
+                        .dailyItinerary[action.payload.dayItinenaryIndex] = {
+                        id: org.id,
+                        date: action.payload.date === undefined ?
+                            org.date : action.payload.date,
+                        location: action.payload.location === undefined ?
+                            org.location : action.payload.location,
+                        tripInfo: action.payload.tripInfo === undefined ?
+                            org.tripInfo : action.payload.tripInfo,
+                        commuteInfo: org.commuteInfo,
                     }
                 }
             }
         },
 
-        updateNoteSegment: (state,
-            action: PayloadAction<{ id: string, data: RawDraftContentState, name: string }>) => {
-            let segmentIndex = state.Trip.tripSegments.findIndex((segment) => {
-                return segment.name == action.payload.name;
+        updateCommuteInfo: (state,
+            action: PayloadAction<{
+                segmentId: string,
+                itinenaryId: string,
+                dayItinenaryIndex?: number,
+                ride: string,
+                code: string,
+                location: string,
+                departTime: string,
+                arrivalTime: string
+            }>) => {
+            let index = state.Trip.tripSegments.findIndex((segment) => {
+                return segment.id == action.payload.segmentId;
             })
-            if (segmentIndex != -1) {
-                let index = state.Trip.tripSegments[segmentIndex].notes.findIndex((note) => {
-                    return note.id == action.payload.id;
-                })
-                //-1 means not found, so we don't handle
-                if (index != -1) {
-                    state.Trip.tripSegments[segmentIndex].notes[index].data = action.payload.data;
+            //-1 means not found, so we don't handle
+            if (index != -1) {
+                let itIndex = state.Trip.tripSegments[index].
+                    itineraries.findIndex((it) => {
+                        return it.id === action.payload.itinenaryId;
+                    })
+                if (itIndex != -1) {
+                    if (action.payload.dayItinenaryIndex !== undefined) {
+                        state.Trip.tripSegments[index].itineraries[itIndex]
+                            .dailyItinerary[action.payload.dayItinenaryIndex].commuteInfo = {
+                            ride: action.payload.ride,
+                            code: action.payload.code,
+                            location: action.payload.location,
+                            departTime: action.payload.departTime,
+                            arrivalTime: action.payload.arrivalTime,
+                        }
+                    }
+                    else {
+                        state.Trip.tripSegments[index].itineraries[itIndex].commuteInfo = {
+                            ride: action.payload.ride,
+                            code: action.payload.code,
+                            location: action.payload.location,
+                            departTime: action.payload.departTime,
+                            arrivalTime: action.payload.arrivalTime,
+                        }
+                    }
                 }
             }
         },
 
-        deleteNote: (state, action: PayloadAction<{ id: string }>) => {
-            state.Trip.notes = state.Trip.notes
-                .filter((note) => {
-                    return note.id !== action.payload.id;
-                })
-        },
-
-        deleteNoteSegment: (state, action: PayloadAction<{ id: string, name: string }>) => {
-            let segmentIndex = state.Trip.tripSegments.findIndex((segment) => {
-                return segment.name == action.payload.name;
-            })
-            if (segmentIndex != -1) {
-                state.Trip.tripSegments[segmentIndex].notes = state.Trip.tripSegments[segmentIndex].notes
-                    .filter((note) => {
-                        return note.id !== action.payload.id;
+        updateStayInfo: (state,
+            action: PayloadAction<{
+                segmentId: string, itinenaryId: string,
+                type: string, link: string,
+                name: string, location: string,
+                price: number
+            }>) => {
+            let index = getSegmentIndex(state.Trip.tripSegments, action.payload.segmentId)
+            //-1 means not found, so we don't handle
+            if (index != -1) {
+                let itIndex = state.Trip.tripSegments[index].
+                    itineraries.findIndex((it) => {
+                        return it.id === action.payload.itinenaryId;
                     })
+                if (itIndex != -1) {
+                    state.Trip.tripSegments[index].itineraries[itIndex].stayInfo = {
+                        type: action.payload.type,
+                        name: action.payload.name,
+                        price: action.payload.price,
+                        link: action.payload.link,
+                        location: action.payload.location,
+                    }
+                }
             }
-
         },
 
         addSegment: (state, action: PayloadAction<{ name: string }>) => {
@@ -130,14 +222,15 @@ export const tripSlice = createSlice({
                     state.Trip.tripSegments[length - 1].endDate;
             }
 
-            let newItinenary = itineraryTemplate;
+            //https://stackoverflow.com/a/728694/15466075
+            let newItinenary = structuredClone(itineraryTemplate);
             newItinenary.date = getLatestTripDate();
             newItinenary.id = uuidv4();
 
             state.Trip.tripSegments = [
                 ...state.Trip.tripSegments,
                 {
-                    name: action.payload.name, startDate: getLatestTripDate(), endDate: state.Trip.endDate, notes: [{
+                    name: action.payload.name, id: uuidv4(), startDate: getLatestTripDate(), endDate: state.Trip.endDate, notes: [{
                         id: uuidv4(),
                         placeholder: 'I wanna go to...',
                         data: convertToRaw(EditorState.createEmpty().getCurrentContent()),
@@ -166,7 +259,10 @@ export const tripSlice = createSlice({
     },
 });
 
-export const { updateTripInfo, addNote, addNoteSegment, updateNote, updateNoteSegment, deleteNote, deleteNoteSegment, addSegment, updateCommuteInfo } = tripSlice.actions;
+export const { updateTripInfo, addNote, addNoteSegment,
+    updateNote, updateNoteSegment, deleteNote,
+    deleteNoteSegment, addSegment, updateCommuteInfo,
+    updateStayInfo, updateItinenary } = tripSlice.actions;
 
 export const selectTrip = (state: RootState) => state.trip.tripReducer.Trip;
 

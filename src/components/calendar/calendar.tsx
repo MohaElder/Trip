@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useAppSelector, useAppDispatch } from '../../app/hooks';
 
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
@@ -13,13 +14,15 @@ import TableRow from '@mui/material/TableRow';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
+import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Button from "@mui/material/Button"
 import AddIcon from '@mui/icons-material/Add';
 
-import type { Itinerary } from '../../data/Itinerary/Itinerary';
+import type { Itinerary, DailyItinerary } from '../../data/Itinerary/Itinerary';
 import type { TripSegment } from '../../data/Trip/Trip';
 
+import { updateItinenary } from '../../features/trip/tripslice';
 
 import CommuteStack from '../commuterStack/commuterStack';
 import StayStack from '../stayStack/stayStack';
@@ -29,14 +32,73 @@ function parseDate(date: string): string {
     return (toParse.getMonth() + 1) + '.' + toParse.getDate()
 }
 
-
-
 export default function Calendar(props: { tripSegment: TripSegment }) {
+    const dispatch = useAppDispatch();
+
     const tripSegment = props.tripSegment;
 
     function Row(props: { row: Itinerary }) {
         const { row } = props;
-        const [open, setOpen] = React.useState(false);
+        const [open, setOpen] = React.useState(true);
+
+        const [editStart, setEditStart] = useState(false);
+        const [editEnd, setEditEnd] = useState(false);
+        const [editTripInfo, setEditTripInfo] = useState(false);
+        const [editPs, setEditPs] = useState(false);
+        const [start, setStart] = useState(props.row.start);
+        const [end, setEnd] = useState(props.row.end);
+        const [tripInfo, setTripInfo] = useState(props.row.tripInfo);
+        const [ps, setPs] = useState(props.row.ps);
+
+
+        function updateStart() {
+            dispatch(updateItinenary({
+                id: tripSegment.id,
+                itinenaryId: props.row.id,
+                start: start
+            }))
+            setEditStart(false)
+        }
+
+        function updateEnd() {
+            dispatch(updateItinenary({
+                id: tripSegment.id,
+                itinenaryId: props.row.id,
+                end: end
+            }))
+            setEditEnd(false)
+        }
+
+        function updateTripInfo() {
+            dispatch(updateItinenary({
+                id: tripSegment.id,
+                itinenaryId: props.row.id,
+                tripInfo: tripInfo
+            }))
+            setEditTripInfo(false)
+        }
+
+        function updatePs() {
+            dispatch(updateItinenary({
+                id: tripSegment.id,
+                itinenaryId: props.row.id,
+                ps: ps
+            }))
+            setEditPs(false)
+        }
+
+        function DayIt(props: { day: DailyItinerary, idx: number }) {
+            return (<TableRow key={props.day.date}>
+                <TableCell component="th" scope="row">
+                    {props.day.date}
+                </TableCell>
+                <TableCell>{props.day.location}</TableCell>
+                <TableCell>{props.day.tripInfo}</TableCell>
+                <TableCell>
+                    <CommuteStack segmentId={tripSegment.id} commuteInfo={props.day.commuteInfo} itineraryIndex={props.idx} itineraryId={row.id} />
+                </TableCell>
+            </TableRow>)
+        }
 
         return (
             <React.Fragment>
@@ -54,15 +116,56 @@ export default function Calendar(props: { tripSegment: TripSegment }) {
                         </Typography>
                     </TableCell>
                     <TableCell component="th" scope="row">
-                        {row.start}
+                        {
+                            editStart ?
+                                <TextField autoFocus={true} value={start} id="standard-basic" onChange={(e) => { setStart(e.target.value) }}
+                                    onBlur={() => { updateStart() }} placeholder='start' variant="standard" />
+                                :
+                                <span onClick={() => { setEditStart(true) }}>{start}</span>
+                        }
+
                     </TableCell>
-                    <TableCell>{row.end}</TableCell>
-                    <TableCell>{row.tripInfo}</TableCell>
+                    <TableCell>{
+                        editEnd ?
+                            <TextField autoFocus={true} value={end} id="standard-basic" onChange={(e) => { setEnd(e.target.value) }}
+                                onBlur={() => { updateEnd() }} placeholder='end' variant="standard" />
+                            :
+                            <span onClick={() => { setEditEnd(true) }}>{end}</span>
+                    }</TableCell>
+                    <TableCell>{
+                        editTripInfo ?
+                            <TextField
+                                autoFocus={true}
+                                value={tripInfo}
+                                multiline
+                                rows={4}
+                                onChange={(e) => { setTripInfo(e.target.value) }}
+                                onBlur={() => { updateTripInfo() }}
+                                placeholder='start'
+                                variant="standard"
+                            />
+                            :
+                            <span onClick={() => { setEditTripInfo(true) }}>{tripInfo}</span>
+                    }</TableCell>
                     <TableCell>
-                        <CommuteStack segmentName={tripSegment.name} commuteInfo={row.commuteInfo} itineraryId={row.id} />
+                        <CommuteStack segmentId={tripSegment.id} commuteInfo={row.commuteInfo} itineraryId={row.id} />
                     </TableCell>
-                    <TableCell><StayStack segmentName={tripSegment.name} stayInfo={row.stayInfo} itineraryId={row.id} /></TableCell>
-                    <TableCell>{row.ps}</TableCell>
+                    <TableCell><StayStack segmentId={tripSegment.id} stayInfo={row.stayInfo} itineraryId={row.id} /></TableCell>
+                    <TableCell>{
+                        editPs ?
+                            <TextField
+                                autoFocus={true}
+                                value={ps}
+                                multiline
+                                rows={4}
+                                onChange={(e) => { setPs(e.target.value) }}
+                                onBlur={() => { updatePs() }}
+                                placeholder='start'
+                                variant="standard"
+                            />
+                            :
+                            <span onClick={() => { setEditPs(true) }}>{ps}</span>
+                    }</TableCell>
                 </TableRow>
                 <TableRow>
                     <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
@@ -81,17 +184,8 @@ export default function Calendar(props: { tripSegment: TripSegment }) {
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        {row.dailyItinerary.map((itinerary) => (
-                                            <TableRow key={itinerary.date}>
-                                                <TableCell component="th" scope="row">
-                                                    {itinerary.date}
-                                                </TableCell>
-                                                <TableCell>{itinerary.location}</TableCell>
-                                                <TableCell>{itinerary.tripInfo}</TableCell>
-                                                {/* <TableCell>
-                                                    {Math.round(historyRow.amount * row.price * 100) / 100}
-                                                </TableCell> */}
-                                            </TableRow>
+                                        {row.dailyItinerary.map((itinerary, idx) => (
+                                            <DayIt day={itinerary} key={idx} idx={idx} />
                                         ))}
                                     </TableBody>
                                 </Table>

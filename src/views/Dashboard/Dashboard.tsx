@@ -1,7 +1,7 @@
 import React from 'react';
 import Notes from '../../components/notes/notes';
 import Typography from '@mui/material/Typography';
-import { trip, Trip } from '../../data/Trip/Trip'
+import { Trip } from '../../data/Trip/Trip'
 
 interface IProps {
     trip: Trip

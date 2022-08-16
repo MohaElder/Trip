@@ -25,10 +25,8 @@ import './styles.css'
 
 export default function TripSegment(props: { tripSegments: Array<TypeTripSegment> }) {
     const [openTripSegmentDialog, setOpenTripSegmentDialog] = useState(props.tripSegments.length === 0);
+    const [activeTripSegmentIndex, setActiveTripSegmentIndex] = useState(0);
     const [newTripSegmentName, setNewTripSegmentName] = useState('');
-    const [activeTripSegmentName, setactiveTripSegmentName] = useState('Create a New Segment!');
-    const [activeTripSegment, setActiveTripSegment] = useState<TypeTripSegment | undefined>(undefined);
-    useEffect(() => { setActiveTripSegment(getTripSegment(activeTripSegmentName)) }, [props.tripSegments]);
 
     const dispatch = useAppDispatch();
 
@@ -37,66 +35,36 @@ export default function TripSegment(props: { tripSegments: Array<TypeTripSegment
     };
 
     const handleChangeActiveTripSegment = (event: SelectChangeEvent) => {
-        let value = event.target.value;
-        if (value === 'create' && props.tripSegments.length === 0) {
-            setOpenTripSegmentDialog(true);
-        }
-        else {
-            let index = props.tripSegments.findIndex((segment) => {
-                return segment.name === event.target.value;
-            });
-            if (index != -1) {
-                setactiveTripSegmentName(props.tripSegments[index].name);
-            }
-        }
+        setActiveTripSegmentIndex(+event.target.value);
     };
-
-    function getTripSegment(str: string) {
-        return props.tripSegments.find((segment) => {
-            return segment.name === str;
-        });
-    }
 
     const handleAddSegment = () => {
         dispatch(addSegment({ name: newTripSegmentName }));
-        setactiveTripSegmentName(newTripSegmentName);
+        setActiveTripSegmentIndex(props.tripSegments.length - 1);
         handleCloseTripSegmentDialog();
     }
 
-    const TripSegmentMenus = props.tripSegments.length === 0 ?
-        <MenuItem value='create' key='None'>Create a trip segment!</MenuItem> : props.tripSegments.map((segment) =>
-            <MenuItem value={segment.name} key={segment.name}>{segment.name}</MenuItem>
-        );
+    const TripSegmentMenus =
+        <Select
+            value={activeTripSegmentIndex.toString()}
+            onChange={handleChangeActiveTripSegment}
+            autoWidth
+            label="Active Segment"
+        >
+            {props.tripSegments.map((segment, idx) =>
+                <MenuItem value={idx} key={segment.id}>{segment.name}</MenuItem>)}
+        </Select>
 
-    const TripSegmentContent = activeTripSegment === undefined ?
-        <div>No active trip segment</div> :
+    const TripSegmentContent =
         <div>
             <Typography variant="h5" gutterBottom component="div" className='title'>
                 Brainstorm Section
             </Typography>
-            <Notes notes={activeTripSegment.notes} segment={activeTripSegmentName} />
+            <Notes notes={props.tripSegments[activeTripSegmentIndex].notes} segmentIndex={activeTripSegmentIndex} />
             <Typography variant="h5" gutterBottom component="div" className='title' sx={{ paddingTop: 5 }}>
                 Trip Calendar
             </Typography>
-            <Calendar tripSegment={activeTripSegment} />
-        </div>
-
-    const SegmentContent = props.tripSegments.length === 0 ? <></> :
-        <div>
-            <Grid>
-                <FormControl sx={{ m: 1, minWidth: 200 }}>
-                    <InputLabel>Active Segment</InputLabel>
-                    <Select
-                        value={activeTripSegmentName}
-                        onChange={handleChangeActiveTripSegment}
-                        autoWidth
-                        label="Active Segment"
-                    >
-                        {TripSegmentMenus}
-                    </Select>
-                </FormControl>
-            </Grid>
-            {TripSegmentContent}
+            <Calendar tripSegment={props.tripSegments[activeTripSegmentIndex]} />
         </div>
 
     return (
@@ -131,7 +99,15 @@ export default function TripSegment(props: { tripSegments: Array<TypeTripSegment
                     </Button>
                 </Grid>
             </div>
-            {SegmentContent}
+            <div>
+                <Grid>
+                    <FormControl sx={{ m: 1, minWidth: 200 }}>
+                        <InputLabel>Active Segment</InputLabel>
+                        {TripSegmentMenus}
+                    </FormControl>
+                </Grid>
+                {TripSegmentContent}
+            </div>
         </div>
     );
 

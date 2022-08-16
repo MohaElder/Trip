@@ -32,7 +32,7 @@ const toolbarSetting = {
 }
 
 //pnDeleteClicked prop type: https://stackoverflow.com/a/57511243
-function Note(props: { body: TypeNote, id: string, segment: string | undefined }) {
+function Note(props: { body: TypeNote, index: number, segmentIndex: number | undefined }) {
 
     const [editorState, setEditorState] =
         useState(
@@ -44,15 +44,15 @@ function Note(props: { body: TypeNote, id: string, segment: string | undefined }
     const onEditorStateChange = (editorState: EditorState) => {
         setEditorState(editorState);
         //converToRaw to store the content as serialized object
-        props.segment == undefined ?
+        props.segmentIndex == undefined ?
             dispatch(updateNote(
-                { id: props.id, data: convertToRaw(editorState.getCurrentContent()) }
+                { index: props.index, data: convertToRaw(editorState.getCurrentContent()) }
             )) :
             dispatch(updateNoteSegment(
                 {
-                    id: props.id,
+                    noteIndex: props.index,
+                    segmentIndex: props.segmentIndex,
                     data: convertToRaw(editorState.getCurrentContent()),
-                    name: props.segment
                 }
             ));
     };
@@ -70,9 +70,9 @@ function Note(props: { body: TypeNote, id: string, segment: string | undefined }
             <div className='delete-button' >
                 <IconButton aria-label="delete" color="error"
                     onClick={() => {
-                        props.segment == undefined ?
-                            dispatch(deleteNote({ id: props.id })) :
-                            dispatch(deleteNoteSegment({ id: props.id, name: props.segment }))
+                        props.segmentIndex == undefined ?
+                            dispatch(deleteNote({ index: props.index })) :
+                            dispatch(deleteNoteSegment({ segmentIndex: props.segmentIndex, noteIndex: props.index }))
                     }}>
                     <DeleteIcon />
                 </IconButton>

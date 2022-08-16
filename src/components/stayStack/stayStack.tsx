@@ -28,19 +28,19 @@ import WeekendIcon from '@mui/icons-material/Weekend';
 
 import CardActionArea from '@mui/material/CardActionArea/CardActionArea';
 
-// import { updatestayInfo } from '../../features/trip/tripslice';
+import { updateStayInfo } from '../../features/trip/tripslice';
 import { StayInfo } from '../../data/StayInfo/StayInfo';
 
-export default function StayStack(props: { segmentName: string, itineraryId: string, stayInfo: StayInfo | null }) {
+export default function StayStack(props: { segmentId: string, itineraryId: string, stayInfo: StayInfo | null }) {
 
     const dispatch = useAppDispatch();
 
     const [modifyStay, setModifyStay] = useState(false)
-    const [stayType, setStayType] = useState<string>('Motel');
-    const [link, setLink] = useState<string>('');
-    const [name, setName] = useState<string>('');
-    const [location, setLocation] = useState<string>('');
-    const [price, setPrice] = useState<number>(0);
+    const [stayType, setStayType] = useState<string | undefined>(props.stayInfo?.type);
+    const [link, setLink] = useState<string | undefined>(props.stayInfo?.link);
+    const [name, setName] = useState<string | undefined>(props.stayInfo?.name);
+    const [location, setLocation] = useState<string | undefined>(props.stayInfo?.location);
+    const [price, setPrice] = useState<number | undefined>(props.stayInfo?.price);
 
     const stayMap = new Map([
         ['Hotel', <HotelIcon />],
@@ -55,7 +55,7 @@ export default function StayStack(props: { segmentName: string, itineraryId: str
         let ret: JSX.Element[] = []
         stayMap.forEach((v, k) => {
             ret.push(
-                <FormControlLabel value={k} control={<Radio />} label={v} />
+                <FormControlLabel key={k} value={k} control={<Radio />} label={v} />
             )
         })
         return ret;
@@ -64,15 +64,19 @@ export default function StayStack(props: { segmentName: string, itineraryId: str
     function handleModifystay() {
         setModifyStay(false);
 
-        // dispatch(updatestayInfo({
-        //     segmentName: props.segmentName,
-        //     itinenaryId: props.itineraryId,
-        //     ride: rideType,
-        //     code: code,
-        //     location: location,
-        //     departTime: departTime,
-        //     arrivalTime: arrivalTime,
-        // }))
+        if (stayType !== undefined && link !== undefined
+            && name !== undefined && location !== undefined 
+            && price !== undefined) {
+            dispatch(updateStayInfo({
+                segmentId: props.segmentId,
+                itinenaryId: props.itineraryId,
+                type: stayType,
+                link: link,
+                name: name,
+                price: price,
+                location: location,
+            }))
+        }
 
     }
 

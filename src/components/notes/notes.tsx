@@ -12,7 +12,7 @@ import { addNote, addNoteSegment } from '../../features/trip/tripslice';
 
 interface IProps {
     notes: Array<TypeNote>;
-    segment?: string;
+    segmentIndex?: number;
 }
 
 const Notes: React.FC<IProps> = (props) => {
@@ -26,9 +26,9 @@ const Notes: React.FC<IProps> = (props) => {
     //since note's memory address is the same, react component does not rerender
     useEffect(() => { setNotes(props.notes) }, [props.notes]);
 
-    const noteGrids = notes.map((note) =>
+    const noteGrids = notes.map((note, idx) =>
         <Grid xs={4} key={note.id}>
-            <Note body={note} id={note.id} segment={props.segment} />
+            <Note body={note} index={idx} segmentIndex={props.segmentIndex} />
         </Grid>
     );
 
@@ -39,9 +39,9 @@ const Notes: React.FC<IProps> = (props) => {
             </Grid>
             <Button className='note-button'
                 onClick={() => {
-                    props.segment == undefined ?
+                    props.segmentIndex == undefined ?
                         dispatch(addNote()) :
-                        dispatch(addNoteSegment({ name: props.segment }))
+                        dispatch(addNoteSegment({ index: props.segmentIndex }))
                 }
                 }
                 sx={{

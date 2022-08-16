@@ -37,16 +37,21 @@ import TwoWheelerIcon from '@mui/icons-material/TwoWheeler';
 import { CommuteInfo } from '../../data/CommuteInfo/CommuteInfo';
 import { updateCommuteInfo } from '../../features/trip/tripslice';
 
-export default function CommuteStack(props: { segmentName: string, itineraryId: string, commuteInfo: CommuteInfo | null }) {
+export default function CommuteStack(props: {
+    segmentId: string,
+    itineraryId: string,
+    itineraryIndex?: number,
+    commuteInfo: CommuteInfo | null
+}) {
 
     const dispatch = useAppDispatch();
 
     const [modifyCommute, setModifyCommute] = useState(false)
     const [departTime, setDepartTime] = useState<string | undefined>(props.commuteInfo?.departTime);
     const [arrivalTime, setArrivalTime] = useState<string | undefined>(props.commuteInfo?.arrivalTime);
-    const [rideType, setRideType] = useState<string>('Car');
-    const [code, setCode] = useState<string>('');
-    const [location, setLocation] = useState<string>('');
+    const [rideType, setRideType] = useState<string | undefined>(props.commuteInfo?.ride);
+    const [code, setCode] = useState<string | undefined>(props.commuteInfo?.code);
+    const [location, setLocation] = useState<string | undefined>(props.commuteInfo?.location);
 
     const rideMap = new Map([
         ['Car', <DirectionsCarIcon />],
@@ -65,7 +70,7 @@ export default function CommuteStack(props: { segmentName: string, itineraryId: 
         let ret: JSX.Element[] = []
         rideMap.forEach((v, k) => {
             ret.push(
-                <FormControlLabel value={k} control={<Radio />} label={v} />
+                <FormControlLabel key={k} value={k} control={<Radio />} label={v} />
             )
         })
         return ret;
@@ -90,15 +95,18 @@ export default function CommuteStack(props: { segmentName: string, itineraryId: 
 
     function handleModifyCommute() {
         setModifyCommute(false);
-        if (departTime !== undefined && arrivalTime !== undefined) {
+        if (departTime !== undefined && arrivalTime !== undefined
+            && rideType !== undefined && code !== undefined
+            && location !== undefined) {
             dispatch(updateCommuteInfo({
-                segmentName: props.segmentName,
+                segmentId: props.segmentId,
                 itinenaryId: props.itineraryId,
                 ride: rideType,
                 code: code,
                 location: location,
                 departTime: departTime,
                 arrivalTime: arrivalTime,
+                dayItinenaryIndex: props.itineraryIndex
             }))
         }
     }
@@ -118,7 +126,8 @@ export default function CommuteStack(props: { segmentName: string, itineraryId: 
                         </RadioGroup>
                     </FormControl>
                     {
-                        ['Car', 'Bike', 'Motorcycle', 'RV', 'Walk'].includes(rideType) ? <></> :
+                        ['Car', 'Bike', 'Motorcycle', 'RV', 'Walk'].includes(
+                            rideType == undefined ? 'Car' : rideType) ? <></> :
                             <div>
                                 <TextField
                                     value={code}
