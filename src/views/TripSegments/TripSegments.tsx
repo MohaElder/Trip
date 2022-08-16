@@ -54,19 +54,7 @@ export default function TripSegment(props: { tripSegments: Array<TypeTripSegment
             {props.tripSegments.map((segment, idx) =>
                 <MenuItem value={idx} key={segment.id}>{segment.name}</MenuItem>)}
         </Select>
-
-    const TripSegmentContent =
-        <div>
-            <Typography variant="h5" gutterBottom component="div" className='title'>
-                Brainstorm Section
-            </Typography>
-            <Notes notes={props.tripSegments[activeTripSegmentIndex].notes} segmentIndex={activeTripSegmentIndex} />
-            <Typography variant="h5" gutterBottom component="div" className='title' sx={{ paddingTop: 5 }}>
-                Trip Calendar
-            </Typography>
-            <Calendar tripSegment={props.tripSegments[activeTripSegmentIndex]} segmentIndex={activeTripSegmentIndex} />
-        </div>
-
+        
     return (
         <div>
             <Dialog open={openTripSegmentDialog} onClose={handleCloseTripSegmentDialog}>
@@ -106,7 +94,16 @@ export default function TripSegment(props: { tripSegments: Array<TypeTripSegment
                         {TripSegmentMenus}
                     </FormControl>
                 </Grid>
-                {TripSegmentContent}
+                <div>
+                    <Typography variant="h5" gutterBottom component="div" className='title'>
+                        Brainstorm Section
+                    </Typography>
+                    <Notes notes={props.tripSegments[activeTripSegmentIndex].notes} segmentIndex={activeTripSegmentIndex} />
+                    <Typography variant="h5" gutterBottom component="div" className='title' sx={{ paddingTop: 5 }}>
+                        Trip Calendar
+                    </Typography>
+                    <Calendar tripSegment={props.tripSegments[activeTripSegmentIndex]} segmentIndex={activeTripSegmentIndex} />
+                </div>
             </div>
         </div>
     );

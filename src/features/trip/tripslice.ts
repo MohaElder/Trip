@@ -79,67 +79,50 @@ export const tripSlice = createSlice({
         },
 
         updateItinenary: (state, action: PayloadAction<{
-            id: string, itinenaryId: string, start?: string,
+            tripSegmentIndex: number, itinenaryIndex: number, start?: string,
             end?: string, tripInfo?: string, ps?: string, date?: string
         }>) => {
-            let index = getSegmentIndex(state.Trip.tripSegments, action.payload.id)
-            //-1 means not found, so we don't handle
-            if (index != -1) {
-                let itIndex = state.Trip.tripSegments[index].
-                    itineraries.findIndex((it) => {
-                        return it.id === action.payload.itinenaryId;
-                    })
-                if (itIndex != -1) {
-                    let org = state.Trip.tripSegments[index].itineraries[itIndex];
-                    state.Trip.tripSegments[index].itineraries[itIndex] = {
-                        id: org.id,
-                        date: action.payload.date === undefined ?
-                            org.date : action.payload.date,
-                        start: action.payload.start === undefined ?
-                            org.start : action.payload.start,
-                        end: action.payload.end === undefined ?
-                            org.end : action.payload.end,
-                        tripInfo: action.payload.tripInfo === undefined ?
-                            org.tripInfo : action.payload.tripInfo,
-                        commuteInfo: org.commuteInfo,
-                        stayInfo: org.stayInfo,
-                        ps: action.payload.ps === undefined ?
-                            org.ps : action.payload.ps,
-                        dailyItinerary: org.dailyItinerary
-                    }
-                }
+            let org = state.Trip
+                .tripSegments[action.payload.tripSegmentIndex]
+                .itineraries[action.payload.itinenaryIndex];
+            state.Trip
+                .tripSegments[action.payload.tripSegmentIndex]
+                .itineraries[action.payload.itinenaryIndex] = {
+                id: org.id,
+                date: action.payload.date === undefined ?
+                    org.date : action.payload.date,
+                start: action.payload.start === undefined ?
+                    org.start : action.payload.start,
+                end: action.payload.end === undefined ?
+                    org.end : action.payload.end,
+                tripInfo: action.payload.tripInfo === undefined ?
+                    org.tripInfo : action.payload.tripInfo,
+                commuteInfo: org.commuteInfo,
+                stayInfo: org.stayInfo,
+                ps: action.payload.ps === undefined ?
+                    org.ps : action.payload.ps,
+                dailyItinerary: org.dailyItinerary
             }
         },
 
         updateDayItinenary: (state, action: PayloadAction<{
-            id: string, itinenaryId: string, dayItinenaryIndex: number,
+            tripSegmentIndex: number, itinenaryIndex: number, dayItinenaryIndex: number,
             date?: string, location?: string, tripInfo?: string
         }>) => {
-            let index = state.Trip.tripSegments.findIndex((segment) => {
-                return segment.id == action.payload.id;
-            })
-            //-1 means not found, so we don't handle
-            if (index != -1) {
-                let itIndex = state.Trip.tripSegments[index].
-                    itineraries.findIndex((it) => {
-                        return it.id === action.payload.itinenaryId;
-                    })
-                if (itIndex != -1) {
-                    let org = state.Trip.tripSegments[index]
-                        .itineraries[itIndex].dailyItinerary[action.payload.dayItinenaryIndex];
-                    state.Trip.tripSegments[index]
-                        .itineraries[itIndex]
-                        .dailyItinerary[action.payload.dayItinenaryIndex] = {
-                        id: org.id,
-                        date: action.payload.date === undefined ?
-                            org.date : action.payload.date,
-                        location: action.payload.location === undefined ?
-                            org.location : action.payload.location,
-                        tripInfo: action.payload.tripInfo === undefined ?
-                            org.tripInfo : action.payload.tripInfo,
-                        commuteInfo: org.commuteInfo,
-                    }
-                }
+
+            let org = state.Trip.tripSegments[action.payload.tripSegmentIndex]
+                .itineraries[action.payload.itinenaryIndex].dailyItinerary[action.payload.dayItinenaryIndex];
+            state.Trip.tripSegments[action.payload.tripSegmentIndex]
+                .itineraries[action.payload.itinenaryIndex]
+                .dailyItinerary[action.payload.dayItinenaryIndex] = {
+                id: org.id,
+                date: action.payload.date === undefined ?
+                    org.date : action.payload.date,
+                location: action.payload.location === undefined ?
+                    org.location : action.payload.location,
+                tripInfo: action.payload.tripInfo === undefined ?
+                    org.tripInfo : action.payload.tripInfo,
+                commuteInfo: org.commuteInfo,
             }
         },
 
@@ -149,8 +132,8 @@ export const tripSlice = createSlice({
                 itinenaryIndex: number,
                 dayItinenaryIndex?: number,
                 ride: string,
-                code: string,
-                location: string,
+                code?: string,
+                location?: string,
                 departTime: string,
                 arrivalTime: string
             }>) => {
@@ -180,7 +163,7 @@ export const tripSlice = createSlice({
             action: PayloadAction<{
                 segmentIndex: number,
                 itinenaryIndex: number,
-                type: string, link: string,
+                type: string, link?: string,
                 name: string, location: string,
                 price: number
             }>) => {
@@ -266,7 +249,7 @@ export const tripSlice = createSlice({
                     stayInfo: {
                         type: 'Hotel',
                         name: 'Staying at...',
-                        location: '',
+                        location: 'Adress is...',
                         price: 0
                     },
                     ps: 'side note',
@@ -293,7 +276,8 @@ export const tripSlice = createSlice({
 export const { updateTripInfo, addNote, addNoteSegment,
     updateNote, updateNoteSegment, deleteNote,
     deleteNoteSegment, addSegment, updateCommuteInfo,
-    updateStayInfo, updateItinenary, addItinenary } = tripSlice.actions;
+    updateStayInfo, updateItinenary, updateDayItinenary,
+    addItinenary } = tripSlice.actions;
 
 export const selectTrip = (state: RootState) => state.trip.tripReducer.Trip;
 

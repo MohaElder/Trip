@@ -96,8 +96,7 @@ export default function CommuteStack(props: {
     function handleModifyCommute() {
         setModifyCommute(false);
         if (departTime !== undefined && arrivalTime !== undefined
-            && rideType !== undefined && code !== undefined
-            && location !== undefined) {
+            && rideType !== undefined) {
             dispatch(updateCommuteInfo({
                 segmentIndex: props.segmentIndex,
                 itinenaryIndex: props.itineraryIndex,

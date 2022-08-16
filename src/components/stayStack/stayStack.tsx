@@ -68,7 +68,7 @@ export default function StayStack(props: {
     function handleModifystay() {
         setModifyStay(false);
 
-        if (stayType !== undefined && link !== undefined
+        if (stayType !== undefined
             && name !== undefined && location !== undefined
             && price !== undefined) {
             dispatch(updateStayInfo({
