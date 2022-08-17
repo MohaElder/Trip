@@ -1,0 +1,20 @@
+.logo-img {
+    width: 4%;
+    margin-right: 20px;
+}
+
+.signature-bar {
+    width: 100%;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.underlined {
+    text-decoration: underline double white;
+}
+
+.fake-btn:hover {
+    cursor: pointer
+}

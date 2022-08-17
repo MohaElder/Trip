@@ -63,6 +63,7 @@
     ]
   },
   "devDependencies": {
-    "@types/react-draft-wysiwyg": "^1.13.4"
+    "@types/react-draft-wysiwyg": "^1.13.4",
+    "file-loader": "^6.2.0"
   }
 }

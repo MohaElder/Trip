@@ -29,7 +29,7 @@ export default function Calendar(props: { tripSegment: TripSegment, segmentIndex
     }
 
     return (
-        <Paper sx={{ m: 5 }}>
+        <Paper>
             <Button onClick={handleNewItinenary} variant="contained" endIcon={<AddIcon />} sx={{ m: 1 }}>
                 New Day
             </Button>

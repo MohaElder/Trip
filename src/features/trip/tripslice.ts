@@ -19,12 +19,6 @@ const initialState: TripState = {
     status: 'welcome',
 };
 
-function getSegmentIndex(segments: Array<TripSegment>, id: string) {
-    return segments.findIndex((segment) => {
-        return segment.id == id;
-    })
-}
-
 export const tripSlice = createSlice({
     name: 'trip',
     initialState,
@@ -36,6 +30,13 @@ export const tripSlice = createSlice({
             state.Trip.endDate = action.payload.endDate == undefined ? state.Trip.endDate : action.payload.endDate;
             state.status = 'created';
         },
+
+        updateSegmentInfo: (state, action: PayloadAction<{ name?: string, startDate?: string, endDate?: string, index: number }>) => {
+            state.Trip.tripSegments[action.payload.index].name = action.payload.name == undefined ? state.Trip.name : action.payload.name;
+            state.Trip.tripSegments[action.payload.index].startDate = action.payload.startDate == undefined ? state.Trip.startDate : action.payload.startDate;
+            state.Trip.tripSegments[action.payload.index].endDate = action.payload.endDate == undefined ? state.Trip.endDate : action.payload.endDate;
+        },
+
         addNote: (state) => {
             state.Trip.notes = [
                 ...state.Trip.notes,
@@ -141,7 +142,6 @@ export const tripSlice = createSlice({
                 .dailyItinerary.splice(action.payload.dayItinenaryIndex, 1)
         },
 
-
         updateCommuteInfo: (state,
             action: PayloadAction<{
                 segmentIndex: number,
@@ -227,9 +227,7 @@ export const tripSlice = createSlice({
                         placeholder: 'I wanna stay at...',
                         data: convertToRaw(EditorState.createEmpty().getCurrentContent()),
                     }],
-                    budgets: [], itineraries: [
-                        newItinenary
-                    ]
+                    budgets: [], itineraries: []
                 }
             ]
         },
@@ -307,7 +305,7 @@ export const tripSlice = createSlice({
 
 });
 
-export const { updateTripInfo, addNote, addNoteSegment,
+export const { updateTripInfo, updateSegmentInfo, addNote, addNoteSegment,
     updateNote, updateNoteSegment, deleteNote,
     deleteNoteSegment, addSegment, updateCommuteInfo,
     updateStayInfo, updateItinenary, updateDayItinenary,

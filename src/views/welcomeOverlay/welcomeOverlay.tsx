@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
-import { selectTripStatus, updateTripInfo } from '../../features/trip/tripslice';
+import { selectTripStatus, updateTripInfo, updateSegmentInfo } from '../../features/trip/tripslice';
 
 import Stack from '@mui/material/Stack';
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -36,6 +36,7 @@ function WelcomeOverlay() {
 
   function handleCreateTrip() {
     dispatch(updateTripInfo({ name: tripName, startDate: startDate?.toDateString(), endDate: endDate?.toDateString() }))
+    dispatch(updateSegmentInfo({ index: 0, name: tripName, startDate: startDate?.toDateString(), endDate: endDate?.toDateString() }))
   }
 
   //modified from https://bobbyhadz.com/blog/javascript-convert-days-to-milliseconds
@@ -96,7 +97,7 @@ function WelcomeOverlay() {
               onChange={(newDate) => {
                 setEndDate(newDate)
                 if (newDate != null && startDate != null) {
-                  setNumOfDays(Math.round(millisecondsToDays(newDate.getTime() - startDate.getTime()) * 10)/10)
+                  setNumOfDays(Math.round(millisecondsToDays(newDate.getTime() - startDate.getTime()) * 10) / 10)
                 }
               }}
               renderInput={(params) => <TextField {...params} />}

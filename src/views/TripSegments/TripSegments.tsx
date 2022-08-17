@@ -22,6 +22,7 @@ import Typography from '@mui/material/Typography';
 import Notes from '../../components/notes/notes';
 import Calendar from '../../components/calendar/calendar';
 import './styles.css'
+import Container from '@mui/material/Container/Container';
 
 export default function TripSegment(props: { tripSegments: Array<TypeTripSegment> }) {
     const [openTripSegmentDialog, setOpenTripSegmentDialog] = useState(props.tripSegments.length === 0);
@@ -44,6 +45,14 @@ export default function TripSegment(props: { tripSegments: Array<TypeTripSegment
         handleCloseTripSegmentDialog();
     }
 
+    function parseDate(): string {
+        let startDate = new Date(props.tripSegments[activeTripSegmentIndex].startDate);
+        let endDate = new Date(props.tripSegments[activeTripSegmentIndex].endDate);
+
+        return (startDate.getMonth() + 1) + '.' + startDate.getDate() + ' - '
+            + (endDate.getMonth() + 1) + '.' + endDate.getDate()
+    }
+
     const TripSegmentMenus =
         <Select
             value={activeTripSegmentIndex.toString()}
@@ -54,9 +63,11 @@ export default function TripSegment(props: { tripSegments: Array<TypeTripSegment
             {props.tripSegments.map((segment, idx) =>
                 <MenuItem value={idx} key={segment.id}>{segment.name}</MenuItem>)}
         </Select>
-        
+
+
+
     return (
-        <div>
+        <Container maxWidth="xl" sx={{ marginTop: 5, paddingBottom: 10 }}>
             <Dialog open={openTripSegmentDialog} onClose={handleCloseTripSegmentDialog}>
                 <DialogTitle>New Trip Segment</DialogTitle>
                 <DialogContent>
@@ -78,34 +89,37 @@ export default function TripSegment(props: { tripSegments: Array<TypeTripSegment
                     <Button onClick={handleAddSegment}>Add</Button>
                 </DialogActions>
             </Dialog>
-            <div className='button-container'>
-                <Grid  >
-                    <Button sx={{ m: 1 }} variant="contained"
-                        endIcon={<AddIcon />} color="success"
-                        onClick={() => { setOpenTripSegmentDialog(true) }}>
-                        NEW SEGMENT
-                    </Button>
-                </Grid>
-            </div>
+            <Typography variant="h4" sx={{ fontWeight: 600 }} gutterBottom component="div">{props.tripSegments[activeTripSegmentIndex].name}</Typography>
+            <Typography variant="h5" gutterBottom component="div">{parseDate()}</Typography>
             <div>
                 <Grid>
-                    <FormControl sx={{ m: 1, minWidth: 200 }}>
+                    <FormControl sx={{ marginTop: 1, marginBottom: 1, minWidth: 200 }}>
                         <InputLabel>Active Segment</InputLabel>
                         {TripSegmentMenus}
                     </FormControl>
                 </Grid>
-                <div>
-                    <Typography variant="h5" gutterBottom component="div" className='title'>
-                        Brainstorm Section
-                    </Typography>
-                    <Notes notes={props.tripSegments[activeTripSegmentIndex].notes} segmentIndex={activeTripSegmentIndex} />
-                    <Typography variant="h5" gutterBottom component="div" className='title' sx={{ paddingTop: 5 }}>
-                        Trip Calendar
-                    </Typography>
-                    <Calendar tripSegment={props.tripSegments[activeTripSegmentIndex]} segmentIndex={activeTripSegmentIndex} />
+                <div className='button-container'>
+                    <Grid  >
+                        <Button sx={{ marginBottom: 5 }} variant="contained"
+                            endIcon={<AddIcon />} color="primary"
+                            onClick={() => { setOpenTripSegmentDialog(true) }}>
+                            NEW SEGMENT
+                        </Button>
+                    </Grid>
                 </div>
+                <Typography variant="h5" gutterBottom component="div">
+                    Brainstorm Section
+                </Typography>
+                <Notes notes={props.tripSegments[activeTripSegmentIndex].notes} segmentIndex={activeTripSegmentIndex} />
+                <Typography variant="h5" gutterBottom component="div" sx={{ paddingTop: 5 }}>
+                    Trip Calendar
+                </Typography>
+                <Calendar tripSegment={props.tripSegments[activeTripSegmentIndex]} segmentIndex={activeTripSegmentIndex} />
+                <Typography variant="h5" gutterBottom component="div" sx={{ paddingTop: 5 }}>
+                    Budget
+                </Typography>
             </div>
-        </div>
+        </Container>
     );
 
 }

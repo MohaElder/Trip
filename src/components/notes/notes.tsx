@@ -34,7 +34,7 @@ const Notes: React.FC<IProps> = (props) => {
 
     return (
         <div>
-            <Grid container spacing={4} sx={{ paddingLeft: 5, paddingRight: 5 }}>
+            <Grid container spacing={4}>
                 {noteGrids}
             </Grid>
             <Button className='note-button'
