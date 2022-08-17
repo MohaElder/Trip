@@ -110,7 +110,6 @@ export const tripSlice = createSlice({
             tripSegmentIndex: number, itinenaryIndex: number, dayItinenaryIndex: number,
             date?: string, location?: string, tripInfo?: string
         }>) => {
-
             let org = state.Trip.tripSegments[action.payload.tripSegmentIndex]
                 .itineraries[action.payload.itinenaryIndex].dailyItinerary[action.payload.dayItinenaryIndex];
             state.Trip.tripSegments[action.payload.tripSegmentIndex]
@@ -126,6 +125,22 @@ export const tripSlice = createSlice({
                 commuteInfo: org.commuteInfo,
             }
         },
+
+        deleteItinenary: (state, action: PayloadAction<{
+            tripSegmentIndex: number, itinenaryIndex: number
+        }>) => {
+            state.Trip.tripSegments[action.payload.tripSegmentIndex]
+                .itineraries.splice(action.payload.itinenaryIndex, 1)
+        },
+
+        deleteDayItinenary: (state, action: PayloadAction<{
+            tripSegmentIndex: number, itinenaryIndex: number, dayItinenaryIndex: number
+        }>) => {
+            state.Trip.tripSegments[action.payload.tripSegmentIndex]
+                .itineraries[action.payload.itinenaryIndex]
+                .dailyItinerary.splice(action.payload.dayItinenaryIndex, 1)
+        },
+
 
         updateCommuteInfo: (state,
             action: PayloadAction<{
@@ -270,6 +285,23 @@ export const tripSlice = createSlice({
                     ]
                 }
             ]
+        },
+
+        addDayItinenary: (state, action: PayloadAction<{ segmentIndex: number, itinenaryIndex: number }>) => {
+            state.Trip.tripSegments[action.payload.segmentIndex].itineraries[action.payload.itinenaryIndex].dailyItinerary = [
+                ...state.Trip.tripSegments[action.payload.segmentIndex].itineraries[action.payload.itinenaryIndex].dailyItinerary,
+                {
+                    id: uuidv4(),
+                    date: '10:00',
+                    location: 'Address',
+                    tripInfo: 'Trip Info',
+                    commuteInfo: {
+                        ride: 'Car',
+                        departTime: '12:00',
+                        arrivalTime: '12:00'
+                    },
+                }
+            ]
         }
     },
 
@@ -279,7 +311,7 @@ export const { updateTripInfo, addNote, addNoteSegment,
     updateNote, updateNoteSegment, deleteNote,
     deleteNoteSegment, addSegment, updateCommuteInfo,
     updateStayInfo, updateItinenary, updateDayItinenary,
-    addItinenary } = tripSlice.actions;
+    addItinenary, addDayItinenary, deleteDayItinenary, deleteItinenary } = tripSlice.actions;
 
 export const selectTrip = (state: RootState) => state.trip.tripReducer.Trip;
 

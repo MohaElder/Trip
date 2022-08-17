@@ -11,13 +11,15 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-
+import Button from "@mui/material/Button"
+import AddIcon from '@mui/icons-material/Add';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 import type { Itinerary } from '../../data/Itinerary/Itinerary';
 
-import { updateItinenary } from '../../features/trip/tripslice';
+import { updateItinenary, addDayItinenary, deleteItinenary } from '../../features/trip/tripslice';
 
 import CommuteStack from '../commuterStack/commuterStack';
 import StayStack from '../stayStack/stayStack';
@@ -25,7 +27,7 @@ import StayStack from '../stayStack/stayStack';
 import DayIt from '../DayItinenary/DayItinenary';
 
 export default function Itinenary(props: {
-    segmentIndex: number, itinenary: Itinerary, idx: number
+    segmentIndex: number, itinenary: Itinerary, itIdx: number
 }) {
 
     const dispatch = useAppDispatch();
@@ -49,7 +51,7 @@ export default function Itinenary(props: {
     function updateItinenaryInfo(type: string) {
         dispatch(updateItinenary({
             tripSegmentIndex: props.segmentIndex,
-            itinenaryIndex: props.idx,
+            itinenaryIndex: props.itIdx,
             start: start,
             end: end,
             tripInfo: tripInfo,
@@ -77,6 +79,13 @@ export default function Itinenary(props: {
         }
     }
 
+    function handleNewDayItinenary() {
+        dispatch(addDayItinenary({
+            segmentIndex: props.segmentIndex,
+            itinenaryIndex: props.itIdx,
+        }))
+    }
+
     return (
         <React.Fragment>
             <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
@@ -85,7 +94,7 @@ export default function Itinenary(props: {
                         <IconButton
                             aria-label="expand row"
                             size="small"
-                            onClick={() => {updateItinenaryInfo('open')}}
+                            onClick={() => { updateItinenaryInfo('open') }}
                         >
                             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
                         </IconButton>
@@ -124,9 +133,9 @@ export default function Itinenary(props: {
                         <span onClick={() => { setEditTripInfo(true) }}>{tripInfo}</span>
                 }</TableCell>
                 <TableCell>
-                    <CommuteStack segmentIndex={props.segmentIndex} commuteInfo={props.itinenary.commuteInfo} itineraryIndex={props.idx} />
+                    <CommuteStack segmentIndex={props.segmentIndex} commuteInfo={props.itinenary.commuteInfo} itineraryIndex={props.itIdx} />
                 </TableCell>
-                <TableCell><StayStack segmentIndex={props.segmentIndex} stayInfo={props.itinenary.stayInfo} itineraryIndex={props.idx} /></TableCell>
+                <TableCell><StayStack segmentIndex={props.segmentIndex} stayInfo={props.itinenary.stayInfo} itineraryIndex={props.itIdx} /></TableCell>
                 <TableCell>{
                     editPs ?
                         <TextField
@@ -142,6 +151,17 @@ export default function Itinenary(props: {
                         :
                         <span onClick={() => { setEditPs(true) }}>{ps}</span>
                 }</TableCell>
+                <TableCell align='right'>
+                    <IconButton aria-label="delete" color="error"
+                        onClick={() => {
+                            dispatch(deleteItinenary({
+                                tripSegmentIndex: props.segmentIndex,
+                                itinenaryIndex: props.itIdx,
+                            }))
+                        }}>
+                        <DeleteIcon />
+                    </IconButton>
+                </TableCell>
             </TableRow>
             <TableRow>
                 <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
@@ -150,6 +170,9 @@ export default function Itinenary(props: {
                             <Typography variant="h6" gutterBottom component="div">
                                 For the Day
                             </Typography>
+                            <Button onClick={handleNewDayItinenary} variant="contained" endIcon={<AddIcon />}>
+                                New Task
+                            </Button>
                             <Table size="small" aria-label="purchases">
                                 <TableHead>
                                     <TableRow>
@@ -161,7 +184,7 @@ export default function Itinenary(props: {
                                 </TableHead>
                                 <TableBody>
                                     {props.itinenary.dailyItinerary.map((itinerary, idx) => (
-                                        <DayIt day={itinerary} key={idx} segmentIndex={props.segmentIndex} idx={props.idx} itIdx={idx} />
+                                        <DayIt day={itinerary} key={idx} segmentIndex={props.segmentIndex} dayIdx={idx} itIdx={props.itIdx} />
                                     ))}
                                 </TableBody>
                             </Table>

@@ -21,7 +21,7 @@ export default function Calendar(props: { tripSegment: TripSegment, segmentIndex
         <Itinenary key={itinerary.date}
             segmentIndex={props.segmentIndex}
             itinenary={itinerary}
-            idx={idx} />
+            itIdx={idx} />
     ))
 
     function handleNewItinenary() {

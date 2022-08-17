@@ -3,15 +3,17 @@ import { useAppSelector, useAppDispatch } from '../../app/hooks';
 
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 import type { DailyItinerary } from '../../data/Itinerary/Itinerary';
 
-import { updateDayItinenary } from '../../features/trip/tripslice';
+import { updateDayItinenary, deleteDayItinenary } from '../../features/trip/tripslice';
 
 import CommuteStack from '../commuterStack/commuterStack';
 import TextField from '@mui/material/TextField';
 
-export default function DayIt(props: { day: DailyItinerary, segmentIndex: number, itIdx: number, idx: number }) {
+export default function DayIt(props: { day: DailyItinerary, segmentIndex: number, itIdx: number, dayIdx: number }) {
 
     const dispatch = useAppDispatch();
 
@@ -26,7 +28,7 @@ export default function DayIt(props: { day: DailyItinerary, segmentIndex: number
         dispatch(updateDayItinenary({
             tripSegmentIndex: props.segmentIndex,
             itinenaryIndex: props.itIdx,
-            dayItinenaryIndex: props.idx,
+            dayItinenaryIndex: props.dayIdx,
             location: location,
             tripInfo: tripInfo,
         }))
@@ -70,7 +72,19 @@ export default function DayIt(props: { day: DailyItinerary, segmentIndex: number
                 <span onClick={() => { setEditTripInfo(true) }}>{tripInfo}</span>
         }</TableCell>
         <TableCell>
-            <CommuteStack segmentIndex={props.segmentIndex} commuteInfo={props.day.commuteInfo} itineraryIndex={props.itIdx} dayItineraryIndex={props.idx} />
+            <CommuteStack segmentIndex={props.segmentIndex} commuteInfo={props.day.commuteInfo} itineraryIndex={props.itIdx} dayItineraryIndex={props.dayIdx} />
+        </TableCell>
+        <TableCell align='right'>
+            <IconButton aria-label="delete" color="error"
+                onClick={() => {
+                    dispatch(deleteDayItinenary({
+                        tripSegmentIndex: props.segmentIndex,
+                        itinenaryIndex: props.itIdx,
+                        dayItinenaryIndex: props.dayIdx,
+                    }))
+                }}>
+                <DeleteIcon />
+            </IconButton>
         </TableCell>
     </TableRow>)
 }
