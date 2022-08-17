@@ -55,7 +55,9 @@ export default function DayIt(props: { day: DailyItinerary, segmentIndex: number
                     <TextField autoFocus={true} value={time} id="standard-basic" onChange={(e) => { setTime(e.target.value) }}
                         onBlur={() => { updateItinenaryInfo('time') }} placeholder='time' variant="standard" />
                     :
-                    <span onClick={() => { setEditTime(true) }}>{time}</span>
+                    time === '' ?
+                        <Button color='primary' variant="outlined" onClick={() => { setEditTime(true) }}>Add Time</Button> :
+                        <span onClick={() => { setEditTime(true) }}>{time}</span>
             }
         </TableCell>
         <TableCell>{
@@ -72,7 +74,9 @@ export default function DayIt(props: { day: DailyItinerary, segmentIndex: number
                 <TextField autoFocus={true} value={tripInfo} id="standard-basic" onChange={(e) => { setTripInfo(e.target.value) }}
                     onBlur={() => { updateItinenaryInfo('tripInfo') }} placeholder='trip info' variant="standard" />
                 :
-                <span onClick={() => { setEditTripInfo(true) }}>{tripInfo}</span>
+                tripInfo === '' ?
+                    <Button color='primary' variant="outlined" onClick={() => { setEditTripInfo(true) }}>Add Trip Info</Button> :
+                    <span onClick={() => { setEditTripInfo(true) }}>{tripInfo}</span>
         }</TableCell>
         <TableCell>
             <CommuteStack segmentIndex={props.segmentIndex} commuteInfo={props.day.commuteInfo} itineraryIndex={props.itIdx} dayItineraryIndex={props.dayIdx} />
