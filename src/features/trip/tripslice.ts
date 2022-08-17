@@ -7,7 +7,6 @@ import type { RawDraftContentState } from "draft-js"
 import { v4 as uuidv4 } from 'uuid';
 
 import { itineraryTemplate } from '../../data/Templates/Template';
-import type { TripSegment } from '../../data/Trip/Trip';
 
 export enum TripStatus {
     welcome = 'welcome',

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
-import { selectTripStatus, updateTripInfo, updateSegmentInfo, TripStatus } from '../../features/trip/tripslice';
+import { selectTripStatus, updateTripInfo, updateSegmentInfo, TripStatus, selectTrip } from '../../features/trip/tripslice';
 
 import Stack from '@mui/material/Stack';
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -18,21 +18,22 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 function WelcomeOverlay() {
 
   const tripStatus = useAppSelector(selectTripStatus);
+  const trip = useAppSelector(selectTrip);
   const dispatch = useAppDispatch();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
-  const [tripName, setTripName] = useState<string>('')
+  const [tripName, setTripName] = useState<string>(trip.name)
 
   const [startDate, setStartDate] = useState<Date | null>(
-    new Date(),
+    new Date(trip.startDate),
   );
-
-  const [numOfDays, setNumOfDays] = useState<number>(0);
 
   const [endDate, setEndDate] = useState<Date | null>(
-    new Date(),
+    new Date(trip.endDate),
   );
+
+  const [numOfDays, setNumOfDays] = useState<number>(startDate !== null && endDate !== null ? Math.round(millisecondsToDays(startDate.getTime() - endDate.getTime()) * 10) / 10 : 0);
 
   function handleCreateTrip() {
     dispatch(updateTripInfo({ name: tripName, startDate: startDate?.toDateString(), endDate: endDate?.toDateString() }))
@@ -56,6 +57,7 @@ function WelcomeOverlay() {
       <DialogContent sx={{ paddingLeft: 10, paddingRight: 10 }}>
         <Stack spacing={4}>
           <TextField
+            required
             onChange={(e) => { setTripName(e.target.value) }}
             autoFocus
             value={tripName}
@@ -77,6 +79,7 @@ function WelcomeOverlay() {
             />
           </LocalizationProvider>
           <TextField
+            type='number'
             onChange={(e) => {
               //conversion from string to number: https://stackoverflow.com/a/14668510/15466075
               setNumOfDays(+e.target.value);
