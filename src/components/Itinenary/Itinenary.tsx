@@ -107,7 +107,9 @@ export default function Itinenary(props: {
                             <TextField autoFocus={true} value={start} id="standard-basic" onChange={(e) => { setStart(e.target.value) }}
                                 onBlur={() => { updateItinenaryInfo('start') }} placeholder='start' variant="standard" />
                             :
-                            <span onClick={() => { setEditStart(true) }}>{start}</span>
+                            start === '' ?
+                                <Button color='primary' variant="outlined" onClick={() => { setEditStart(true) }}>Add Start</Button> :
+                                <span onClick={() => { setEditStart(true) }}>{start}</span>
                     }
                 </TableCell>
                 <TableCell>{
@@ -115,7 +117,9 @@ export default function Itinenary(props: {
                         <TextField autoFocus={true} value={end} id="standard-basic" onChange={(e) => { setEnd(e.target.value) }}
                             onBlur={() => { updateItinenaryInfo('end') }} placeholder='end' variant="standard" />
                         :
-                        <span onClick={() => { setEditEnd(true) }}>{end}</span>
+                        end === '' ?
+                            <Button color='primary' variant="outlined" onClick={() => { setEditEnd(true) }}>Add End</Button> :
+                            <span onClick={() => { setEditEnd(true) }}>{end}</span>
                 }</TableCell>
                 <TableCell>{
                     editTripInfo ?
@@ -130,7 +134,9 @@ export default function Itinenary(props: {
                             variant="standard"
                         />
                         :
-                        <span onClick={() => { setEditTripInfo(true) }}>{tripInfo}</span>
+                        tripInfo === '' ?
+                            <Button color='primary' variant="outlined" onClick={() => { setEditTripInfo(true) }}>Add Trip Info</Button> :
+                            <span onClick={() => { setEditTripInfo(true) }}>{tripInfo}</span>
                 }</TableCell>
                 <TableCell>
                     <CommuteStack segmentIndex={props.segmentIndex} commuteInfo={props.itinenary.commuteInfo} itineraryIndex={props.itIdx} />
@@ -149,7 +155,9 @@ export default function Itinenary(props: {
                             variant="standard"
                         />
                         :
-                        <span onClick={() => { setEditPs(true) }}>{ps}</span>
+                        ps === '' ?
+                            <Button color='primary' variant="outlined" onClick={() => { setEditPs(true) }}>Add Side Note</Button> :
+                            <span onClick={() => { setEditPs(true) }}>{ps}</span>
                 }</TableCell>
                 <TableCell align='right'>
                     <IconButton aria-label="delete" color="error"

@@ -12,6 +12,7 @@ import { updateDayItinenary, deleteDayItinenary } from '../../features/trip/trip
 
 import CommuteStack from '../commuterStack/commuterStack';
 import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button/Button';
 
 export default function DayIt(props: { day: DailyItinerary, segmentIndex: number, itIdx: number, dayIdx: number }) {
 
@@ -62,7 +63,9 @@ export default function DayIt(props: { day: DailyItinerary, segmentIndex: number
                 <TextField autoFocus={true} value={location} id="standard-basic" onChange={(e) => { setLocation(e.target.value) }}
                     onBlur={() => { updateItinenaryInfo('location') }} placeholder='location' variant="standard" />
                 :
-                <span onClick={() => { setEditLocation(true) }}>{location}</span>
+                location === '' ?
+                    <Button color='primary' variant="outlined" onClick={() => { setEditLocation(true) }}>Add Location</Button> :
+                    <span onClick={() => { setEditLocation(true) }}>{location}</span>
         }</TableCell>
         <TableCell>{
             editTripInfo ?

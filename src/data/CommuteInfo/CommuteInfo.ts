@@ -1,7 +1,7 @@
 export type CommuteInfo = {
     ride: string;
-    code?: string;
-    location?: string;
+    code: string;
+    location: string;
     departTime: string;
     arrivalTime: string;
 }

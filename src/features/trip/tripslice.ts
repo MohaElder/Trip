@@ -148,30 +148,45 @@ export const tripSlice = createSlice({
                 itinenaryIndex: number,
                 dayItinenaryIndex?: number,
                 ride: string,
-                code?: string,
-                location?: string,
+                code: string,
+                location: string,
                 departTime: string,
-                arrivalTime: string
+                arrivalTime: string,
+                delete?: boolean,
             }>) => {
 
             if (action.payload.dayItinenaryIndex !== undefined) {
-                state.Trip.tripSegments[action.payload.segmentIndex].itineraries[action.payload.itinenaryIndex]
-                    .dailyItinerary[action.payload.dayItinenaryIndex].commuteInfo = {
-                    ride: action.payload.ride,
-                    code: action.payload.code,
-                    location: action.payload.location,
-                    departTime: action.payload.departTime,
-                    arrivalTime: action.payload.arrivalTime,
+                if (action.payload.delete === true) {
+                    state.Trip.tripSegments[action.payload.segmentIndex].itineraries[action.payload.itinenaryIndex]
+                        .dailyItinerary[action.payload.dayItinenaryIndex].commuteInfo = null;
+                }
+                else {
+                    state.Trip.tripSegments[action.payload.segmentIndex].itineraries[action.payload.itinenaryIndex]
+                        .dailyItinerary[action.payload.dayItinenaryIndex].commuteInfo = {
+                        ride: action.payload.ride,
+                        code: action.payload.code,
+                        location: action.payload.location,
+                        departTime: action.payload.departTime,
+                        arrivalTime: action.payload.arrivalTime,
+                    }
                 }
             }
             else {
-                state.Trip.tripSegments[action.payload.segmentIndex].itineraries[action.payload.itinenaryIndex].commuteInfo = {
-                    ride: action.payload.ride,
-                    code: action.payload.code,
-                    location: action.payload.location,
-                    departTime: action.payload.departTime,
-                    arrivalTime: action.payload.arrivalTime,
+                if (action.payload.delete === true) {
+
+                    state.Trip.tripSegments[action.payload.segmentIndex].itineraries[action.payload.itinenaryIndex]
+                        .commuteInfo = null;
                 }
+                else {
+                    state.Trip.tripSegments[action.payload.segmentIndex].itineraries[action.payload.itinenaryIndex].commuteInfo = {
+                        ride: action.payload.ride,
+                        code: action.payload.code,
+                        location: action.payload.location,
+                        departTime: action.payload.departTime,
+                        arrivalTime: action.payload.arrivalTime,
+                    }
+                }
+
             }
         },
 
@@ -256,11 +271,7 @@ export const tripSlice = createSlice({
                     start: 'Start',
                     end: 'End',
                     tripInfo: 'Trip Info',
-                    commuteInfo: {
-                        ride: 'Car',
-                        departTime: '12:00',
-                        arrivalTime: '12:00'
-                    },
+                    commuteInfo: null,
                     stayInfo: {
                         type: 'Hotel',
                         name: 'Staying at...',
@@ -274,11 +285,7 @@ export const tripSlice = createSlice({
                             date: '10:00',
                             location: 'Address',
                             tripInfo: 'Trip Info',
-                            commuteInfo: {
-                                ride: 'Car',
-                                departTime: '12:00',
-                                arrivalTime: '12:00'
-                            },
+                            commuteInfo: null,
                         }
                     ]
                 }
@@ -293,11 +300,7 @@ export const tripSlice = createSlice({
                     date: '10:00',
                     location: 'Address',
                     tripInfo: 'Trip Info',
-                    commuteInfo: {
-                        ride: 'Car',
-                        departTime: '12:00',
-                        arrivalTime: '12:00'
-                    },
+                    commuteInfo: null,
                 }
             ]
         }

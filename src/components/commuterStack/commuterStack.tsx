@@ -47,11 +47,11 @@ export default function CommuteStack(props: {
     const dispatch = useAppDispatch();
 
     const [modifyCommute, setModifyCommute] = useState(false)
-    const [departTime, setDepartTime] = useState<string | undefined>(props.commuteInfo?.departTime);
-    const [arrivalTime, setArrivalTime] = useState<string | undefined>(props.commuteInfo?.arrivalTime);
-    const [rideType, setRideType] = useState<string | undefined>(props.commuteInfo?.ride);
-    const [code, setCode] = useState<string | undefined>(props.commuteInfo?.code);
-    const [location, setLocation] = useState<string | undefined>(props.commuteInfo?.location);
+    const [departTime, setDepartTime] = useState<string>(props.commuteInfo === null ? '' : props.commuteInfo.departTime);
+    const [arrivalTime, setArrivalTime] = useState<string>(props.commuteInfo === null ? '' : props.commuteInfo.arrivalTime);
+    const [rideType, setRideType] = useState<string>(props.commuteInfo === null ? '' : props.commuteInfo.ride);
+    const [code, setCode] = useState<string>(props.commuteInfo === null ? '' : props.commuteInfo.code);
+    const [location, setLocation] = useState<string>(props.commuteInfo === null ? '' : props.commuteInfo.location);
 
     const rideMap = new Map([
         ['Car', <DirectionsCarIcon />],
@@ -76,21 +76,17 @@ export default function CommuteStack(props: {
         return ret;
     }
 
-    function toDateString(str: string | undefined) {
+    function toDateString(str: string) {
         let date = new Date()
-        if (str !== undefined) {
-            let arr = str.split(':')
-            date.setHours(+arr[0]);
-            date.setMinutes(+arr[1]);
-        }
+        let arr = str.split(':')
+        date.setHours(+arr[0]);
+        date.setMinutes(+arr[1]);
         return date.toString()
     }
 
-    function toPlainDateTime(str: string | undefined) {
-        if (str !== undefined) {
-            let dateStr = new Date(str).toTimeString().split(':')
-            return dateStr[0] + ':' + dateStr[1]
-        }
+    function toPlainDateTime(str: string) {
+        let dateStr = new Date(str).toTimeString().split(':')
+        return dateStr[0] + ':' + dateStr[1]
     }
 
     function handleModifyCommute() {
@@ -106,6 +102,23 @@ export default function CommuteStack(props: {
                 departTime: departTime,
                 arrivalTime: arrivalTime,
                 dayItinenaryIndex: props.dayItineraryIndex
+            }))
+        }
+    }
+
+    function handleDeleteCommute() {
+        setModifyCommute(false);
+        if (departTime !== undefined && arrivalTime !== undefined
+            && rideType !== undefined) {
+            dispatch(updateCommuteInfo({
+                segmentIndex: props.segmentIndex,
+                itinenaryIndex: props.itineraryIndex,
+                ride: rideType,
+                code: code,
+                location: location,
+                departTime: departTime,
+                arrivalTime: arrivalTime,
+                delete: true,
             }))
         }
     }
@@ -179,33 +192,47 @@ export default function CommuteStack(props: {
                 </Stack>
             </DialogContent>
             <DialogActions>
+                <Button onClick={handleDeleteCommute} color='error'>
+                    Delete
+                </Button>
                 <Button autoFocus onClick={handleModifyCommute}>
                     Confirm
                 </Button>
+
             </DialogActions></Dialog>
     return (
-        props.commuteInfo == null ? <div>/</div> :
-            <div>
-                {dialog}
-                <Card sx={{ minWidth: 275 }}>
-                    <CardActionArea onClick={() => { setModifyCommute(true) }}>
-                        <CardContent>
-                            <Grid>
-                                {rideMap.get(props.commuteInfo.ride)}
-                            </Grid>
-                            <Typography variant="h6" component="div">
-                                {props.commuteInfo.departTime} - {props.commuteInfo.arrivalTime}
-                            </Typography>
-                            <Typography variant="body2">
-                                {props.commuteInfo.code}
-                            </Typography>
-                            <Typography variant="body2">
-                                {props.commuteInfo.location}
-                            </Typography>
-                        </CardContent>
-                    </CardActionArea>
-                </Card>
-            </div>
+        <div>
+            {dialog}
+            {props.commuteInfo === null ?
+                <Button color='primary' variant="outlined" onClick={() => { setModifyCommute(true) }}>Add Transportaion</Button> :
+                <div>
+                    <Card sx={{ minWidth: 275 }}>
+                        <CardActionArea onClick={() => { setModifyCommute(true) }}>
+                            <CardContent>
+                                <Grid>
+                                    {rideMap.get(props.commuteInfo.ride)}
+                                </Grid>
+                                <Typography variant="h6" component="div">
+                                    {props.commuteInfo.departTime} - {props.commuteInfo.arrivalTime}
+                                </Typography>
+                                {
+                                    ['Car', 'Bike', 'Motorcycle', 'RV', 'Walk'].includes(
+                                        rideType == undefined ? 'Car' : rideType) ? <></> :
+                                        <div>
+                                            <Typography variant="body2">
+                                                {props.commuteInfo.code}
+                                            </Typography>
+                                            <Typography variant="body2">
+                                                {props.commuteInfo.location}
+                                            </Typography>
+                                        </div>
+                                }
 
+                            </CardContent>
+                        </CardActionArea>
+                    </Card>
+                </div>
+            }
+        </div>
     );
 }
