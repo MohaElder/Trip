@@ -89,7 +89,7 @@ export default function TripSegment(props: { tripSegments: Array<TypeTripSegment
                     <Button onClick={handleAddSegment}>Add</Button>
                 </DialogActions>
             </Dialog>
-            <Typography variant="h4" sx={{ fontWeight: 600 }} gutterBottom component="div">{props.tripSegments[activeTripSegmentIndex].name}</Typography>
+            <Typography variant="h3" sx={{ fontWeight: 600 }} component="div">{props.tripSegments[activeTripSegmentIndex].name}</Typography>
             <Typography variant="h5" gutterBottom component="div">{parseDate()}</Typography>
             <div>
                 <Grid>

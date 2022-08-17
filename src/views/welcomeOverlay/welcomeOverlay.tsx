@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
-import { selectTripStatus, updateTripInfo, updateSegmentInfo } from '../../features/trip/tripslice';
+import { selectTripStatus, updateTripInfo, updateSegmentInfo, TripStatus } from '../../features/trip/tripslice';
 
 import Stack from '@mui/material/Stack';
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -49,7 +49,7 @@ function WelcomeOverlay() {
   }
 
   return (
-    <Dialog open={tripStatus == 'welcome'} fullScreen={fullScreen}>
+    <Dialog open={tripStatus == TripStatus.welcome || tripStatus == TripStatus.editing} fullScreen={fullScreen}>
       <DialogTitle sx={{ textAlign: 'center', paddingTop: 5 }}>
         <span className='open-text' onClick={() => { console.log("clicked open") }}>OPEN</span> OR CREATE TRIP👇
       </DialogTitle>

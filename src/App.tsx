@@ -146,7 +146,7 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <Router>
-        {WelcomeOverlay()}
+        <WelcomeOverlay />
         <TopBar />
         <div>
           <Routes>

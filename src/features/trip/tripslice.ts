@@ -9,14 +9,21 @@ import { v4 as uuidv4 } from 'uuid';
 import { itineraryTemplate } from '../../data/Templates/Template';
 import type { TripSegment } from '../../data/Trip/Trip';
 
+export enum TripStatus {
+    welcome = 'welcome',
+    opened = 'opened',
+    created = 'created',
+    editing = 'editing'
+}
+
 export interface TripState {
     Trip: Trip;
-    status: 'welcome' | 'opened' | 'created';
+    status: TripStatus;
 }
 
 const initialState: TripState = {
     Trip: trip,
-    status: 'welcome',
+    status: TripStatus.welcome,
 };
 
 export const tripSlice = createSlice({
@@ -24,11 +31,16 @@ export const tripSlice = createSlice({
     initialState,
     // The `reducers` field lets us define reducers and generate associated actions
     reducers: {
+
+        setTripStatus: (state, action: PayloadAction<{ status: TripStatus }>) => {
+            state.status = action.payload.status;
+        },
+
         updateTripInfo: (state, action: PayloadAction<{ name?: string, startDate?: string, endDate?: string }>) => {
             state.Trip.name = action.payload.name == undefined ? state.Trip.name : action.payload.name;
             state.Trip.startDate = action.payload.startDate == undefined ? state.Trip.startDate : action.payload.startDate;
             state.Trip.endDate = action.payload.endDate == undefined ? state.Trip.endDate : action.payload.endDate;
-            state.status = 'created';
+            state.status = TripStatus.created;
         },
 
         updateSegmentInfo: (state, action: PayloadAction<{ name?: string, startDate?: string, endDate?: string, index: number }>) => {
@@ -312,7 +324,8 @@ export const { updateTripInfo, updateSegmentInfo, addNote, addNoteSegment,
     updateNote, updateNoteSegment, deleteNote,
     deleteNoteSegment, addSegment, updateCommuteInfo,
     updateStayInfo, updateItinenary, updateDayItinenary,
-    addItinenary, addDayItinenary, deleteDayItinenary, deleteItinenary } = tripSlice.actions;
+    addItinenary, addDayItinenary, deleteDayItinenary, deleteItinenary,
+    setTripStatus } = tripSlice.actions;
 
 export const selectTrip = (state: RootState) => state.trip.tripReducer.Trip;
 
