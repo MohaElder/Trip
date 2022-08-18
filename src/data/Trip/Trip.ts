@@ -2,7 +2,8 @@ import type { Note } from '../Note/Note';
 import type { Itinerary } from '../Itinerary/Itinerary';
 
 import { v4 as uuidv4 } from 'uuid';
-import { EditorState, convertToRaw } from "draft-js";;
+import { EditorState, convertToRaw } from "draft-js";import { Budget } from '../Budget/Budget';
+;
 
 export type TripSegment = {
     id: string;
@@ -10,7 +11,7 @@ export type TripSegment = {
     startDate: string;
     endDate: string;
     notes: Array<Note>;
-    budgets: Array<Object>;
+    budgets: Array<Budget>;
     itineraries: Array<Itinerary>;
 }
 
@@ -19,7 +20,7 @@ export type Trip = {
     startDate: string;
     endDate: string;
     notes: Array<Note>;
-    budgets: Array<Object>;
+    budgets: Array<Budget>;
     tripSegments: Array<TripSegment>;
 }
             

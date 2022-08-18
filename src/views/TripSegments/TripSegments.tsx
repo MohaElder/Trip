@@ -25,6 +25,7 @@ import './styles.css'
 import Container from '@mui/material/Container/Container';
 import ModifyTripSegmentOverlay from '../../components/modifyTripSegmentOverlay/modifyTripSegmentOverlay';
 import EditIcon from '@mui/icons-material/Edit';
+import BudgetChart from '../../components/budgetChart/budgetChart';
 
 export default function TripSegment(props: { tripSegments: Array<TypeTripSegment> }) {
     const [openTripSegmentDialog, setOpenTripSegmentDialog] = useState(props.tripSegments.length === 0);
@@ -128,6 +129,7 @@ export default function TripSegment(props: { tripSegments: Array<TypeTripSegment
                 <Typography variant="h5" gutterBottom component="div" sx={{ paddingTop: 5 }}>
                     Budget
                 </Typography>
+                <BudgetChart tripSegment={props.tripSegments[activeTripSegmentIndex]} segmentIndex={activeTripSegmentIndex} />
             </div>
         </Container>
     );

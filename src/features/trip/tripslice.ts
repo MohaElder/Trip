@@ -140,6 +140,26 @@ export const tripSlice = createSlice({
             }
         },
 
+        updateBudget: (state, action: PayloadAction<{
+            tripSegmentIndex: number, budgetIndex: number, name?: string,
+            price?: number, quantity?: number
+        }>) => {
+            let org = state.Trip
+                .tripSegments[action.payload.tripSegmentIndex]
+                .budgets[action.payload.budgetIndex];
+            state.Trip
+                .tripSegments[action.payload.tripSegmentIndex]
+                .budgets[action.payload.budgetIndex] = {
+                id: org.id,
+                name: action.payload.name === undefined ?
+                    org.name : action.payload.name,
+                price: action.payload.price === undefined ?
+                    org.price : action.payload.price,
+                quantity: action.payload.quantity === undefined ?
+                    org.quantity : action.payload.quantity,
+            }
+        },
+
         deleteItinenary: (state, action: PayloadAction<{
             tripSegmentIndex: number, itinenaryIndex: number
         }>) => {
@@ -153,6 +173,13 @@ export const tripSlice = createSlice({
             state.Trip.tripSegments[action.payload.tripSegmentIndex]
                 .itineraries[action.payload.itinenaryIndex]
                 .dailyItinerary.splice(action.payload.dayItinenaryIndex, 1)
+        },
+
+        deleteBudget: (state, action: PayloadAction<{
+            tripSegmentIndex: number, budgetIndex: number
+        }>) => {
+            state.Trip.tripSegments[action.payload.tripSegmentIndex]
+                .budgets.splice(action.payload.budgetIndex, 1)
         },
 
         updateCommuteInfo: (state,
@@ -316,7 +343,19 @@ export const tripSlice = createSlice({
                     commuteInfo: null,
                 }
             ]
-        }
+        },
+
+        addBudget: (state, action: PayloadAction<{ segmentIndex: number }>) => {
+            state.Trip.tripSegments[action.payload.segmentIndex].budgets = [
+                ...state.Trip.tripSegments[action.payload.segmentIndex].budgets,
+                {
+                    id: uuidv4(),
+                    name: 'New Item',
+                    price: 0,
+                    quantity: 1
+                }
+            ]
+        },
     },
 
 });
@@ -326,7 +365,7 @@ export const { updateTripInfo, updateSegmentInfo, addNote, addNoteSegment,
     deleteNoteSegment, addSegment, updateCommuteInfo,
     updateStayInfo, updateItinenary, updateDayItinenary,
     addItinenary, addDayItinenary, deleteDayItinenary, deleteItinenary,
-    setTripStatus } = tripSlice.actions;
+    setTripStatus, addBudget, updateBudget, deleteBudget } = tripSlice.actions;
 
 export const selectTrip = (state: RootState) => state.trip.tripReducer.Trip;
 
