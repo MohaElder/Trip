@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
-import { addSegment } from '../../features/trip/tripslice';
+import { addSegment, setTripStatus, TripStatus } from '../../features/trip/tripslice';
 
 import type { TripSegment as TypeTripSegment } from '../../data/Trip/Trip';
 
@@ -23,6 +23,8 @@ import Notes from '../../components/notes/notes';
 import Calendar from '../../components/calendar/calendar';
 import './styles.css'
 import Container from '@mui/material/Container/Container';
+import ModifyTripSegmentOverlay from '../../components/modifyTripSegmentOverlay/modifyTripSegmentOverlay';
+import EditIcon from '@mui/icons-material/Edit';
 
 export default function TripSegment(props: { tripSegments: Array<TypeTripSegment> }) {
     const [openTripSegmentDialog, setOpenTripSegmentDialog] = useState(props.tripSegments.length === 0);
@@ -64,10 +66,14 @@ export default function TripSegment(props: { tripSegments: Array<TypeTripSegment
                 <MenuItem value={idx} key={segment.id}>{segment.name}</MenuItem>)}
         </Select>
 
+    function handleEditSegment() {
+        dispatch(setTripStatus({ status: TripStatus.editingSegment }));
+    }
 
 
     return (
         <Container maxWidth="xl" sx={{ marginTop: 5, paddingBottom: 10 }}>
+            <ModifyTripSegmentOverlay segment={props.tripSegments[activeTripSegmentIndex]} segmentIndex={activeTripSegmentIndex} />
             <Dialog open={openTripSegmentDialog} onClose={handleCloseTripSegmentDialog}>
                 <DialogTitle>New Trip Segment</DialogTitle>
                 <DialogContent>
@@ -91,6 +97,10 @@ export default function TripSegment(props: { tripSegments: Array<TypeTripSegment
             </Dialog>
             <Typography variant="h3" sx={{ fontWeight: 600 }} component="div">{props.tripSegments[activeTripSegmentIndex].name}</Typography>
             <Typography variant="h5" gutterBottom component="div">{parseDate()}</Typography>
+            <Button sx={{ marginBottom: 5 }} variant="contained"
+                endIcon={<EditIcon />} color="secondary" onClick={() => { handleEditSegment() }}>
+                EDIT SEGMENT
+            </Button>
             <div>
                 <Grid>
                     <FormControl sx={{ marginTop: 1, marginBottom: 1, minWidth: 200 }}>

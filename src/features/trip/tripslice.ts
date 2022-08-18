@@ -12,7 +12,8 @@ export enum TripStatus {
     welcome = 'welcome',
     opened = 'opened',
     created = 'created',
-    editing = 'editing'
+    editing = 'editing',
+    editingSegment = '.editingSegment',
 }
 
 export interface TripState {
@@ -46,6 +47,7 @@ export const tripSlice = createSlice({
             state.Trip.tripSegments[action.payload.index].name = action.payload.name == undefined ? state.Trip.name : action.payload.name;
             state.Trip.tripSegments[action.payload.index].startDate = action.payload.startDate == undefined ? state.Trip.startDate : action.payload.startDate;
             state.Trip.tripSegments[action.payload.index].endDate = action.payload.endDate == undefined ? state.Trip.endDate : action.payload.endDate;
+            state.status = TripStatus.created;
         },
 
         addNote: (state) => {
