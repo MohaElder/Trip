@@ -11,7 +11,6 @@ import Button from "@mui/material/Button"
 import AddIcon from '@mui/icons-material/Add';
 
 import type { TripSegment } from '../../data/Trip/Trip';
-import Itinenary from '../Itinenary/Itinenary';
 
 import { addBudget } from '../../features/trip/tripslice';
 import Budget from '../budget/budget';
