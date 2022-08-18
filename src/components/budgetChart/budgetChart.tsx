@@ -65,17 +65,13 @@ export default function BudgetChart(props: { tripSegment: TripSegment, segmentIn
                             <TableCell> Name </TableCell>
                             <TableCell> Price </TableCell>
                             <TableCell> Quantity </TableCell>
-                            <TableCell> Total </TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {budgets}
 
                         <TableRow>
-                            <TableCell> </TableCell>
-                            <TableCell> </TableCell>
-                            <TableCell> </TableCell>
-                            <TableCell>${calculateTotalPrice()} </TableCell>
+                            <TableCell>Total: ${calculateTotalPrice()} </TableCell>
                         </TableRow>
                     </TableBody>
                 </Table>
