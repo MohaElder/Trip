@@ -1,5 +1,4 @@
 import { configureStore, ThunkAction, Action, combineReducers } from '@reduxjs/toolkit';
-import counterReducer from '../features/counter/counterSlice';
 import tripReducer from '../features/trip/tripslice';
 import { enableMapSet } from 'immer';
 
@@ -10,7 +9,6 @@ export const store = configureStore({
     trip: combineReducers({
       tripReducer,
     }),
-    counter: counterReducer,
   },
 });
 
