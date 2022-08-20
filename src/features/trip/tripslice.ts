@@ -399,8 +399,8 @@ export const tripSlice = createSlice({
                     commuteInfo: null,
                     stayInfo: {
                         type: 'Hotel',
-                        name: 'Staying at...',
-                        location: 'Adress is...',
+                        name: '',
+                        location: '',
                         price: 0
                     },
                     ps: 'side note',

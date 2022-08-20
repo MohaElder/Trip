@@ -45,7 +45,9 @@ function WelcomeOverlay() {
     setClicked(true)
     if (validateForm()) {
       dispatch(updateTripInfo({ name: tripName, startDate: startDate?.toDateString(), endDate: endDate?.toDateString() }))
-      dispatch(updateSegmentInfo({ index: 0, name: 'First Segment of ' + tripName, startDate: startDate?.toDateString(), endDate: endDate?.toDateString() }))
+      if (tripStatus == TripStatus.welcome) {
+        dispatch(updateSegmentInfo({ index: 0, name: 'First Segment of ' + tripName, startDate: startDate?.toDateString(), endDate: endDate?.toDateString() }))
+      }
     }
   }
 

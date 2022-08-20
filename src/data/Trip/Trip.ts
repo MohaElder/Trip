@@ -2,8 +2,8 @@ import type { Note } from '../Note/Note';
 import type { Itinerary } from '../Itinerary/Itinerary';
 
 import { v4 as uuidv4 } from 'uuid';
-import { EditorState, convertToRaw } from "draft-js";import { Budget } from '../Budget/Budget';
-;
+import { EditorState, convertToRaw } from "draft-js";
+import { Budget } from '../Budget/Budget';
 
 export type TripSegment = {
     id: string;
@@ -23,7 +23,7 @@ export type Trip = {
     budgets: Array<Budget>;
     tripSegments: Array<TripSegment>;
 }
-            
+
 const trip: Trip = {
     name: "",
     startDate: Date().toString(),
@@ -43,7 +43,9 @@ const trip: Trip = {
     budgets: [],
     tripSegments: [
         {
-            name: 'Default', id: uuidv4(), startDate: Date().toString(), endDate: Date().toString(), notes: [{
+            name: 'Default', id: uuidv4(), 
+            startDate: '', 
+            endDate: '', notes: [{
                 id: uuidv4(),
                 placeholder: 'I wanna go to...',
                 data: convertToRaw(EditorState.createEmpty().getCurrentContent()),
