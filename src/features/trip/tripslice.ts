@@ -404,15 +404,7 @@ export const tripSlice = createSlice({
                         price: 0
                     },
                     ps: 'side note',
-                    dailyItinerary: [
-                        {
-                            id: uuidv4(),
-                            date: '10:00',
-                            location: 'Address',
-                            tripInfo: 'Trip Info',
-                            commuteInfo: null,
-                        }
-                    ]
+                    dailyItinerary: []
                 }
             ]
         },

@@ -17,21 +17,7 @@ export const itineraryTemplate: Itinerary = {
         price: 399,
     },
     ps: 'you may put extra note here',
-    dailyItinerary: [
-        {
-            id: 'sdsdsdsd',
-            date: '10:00',
-            location: 'Westfield UTC',
-            tripInfo: 'Hang out at Shake Shack',
-            commuteInfo: {
-                ride: 'Bus',
-                code: 'Route 41',
-                location: 'Governer Drive Gas Station',
-                departTime: '10:20',
-                arrivalTime: '10:25',
-            }
-        }
-    ],
+    dailyItinerary: [],
 }
 
 export const tripSegmentTemplate: TripSegment = {

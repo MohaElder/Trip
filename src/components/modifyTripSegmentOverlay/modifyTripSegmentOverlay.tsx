@@ -35,10 +35,10 @@ export default function ModifyTripSegmentOverlay(props: { segment: TripSegment, 
   }, [tripStatus]);
 
   const [segmentName, setSegmentName] = useState<string>(
-    tripStatus == TripStatus.creatingSegment ? 'New Segment' :
+    tripStatus == TripStatus.creatingSegment ? '' :
       props.segment.name)
   useEffect(() => {
-    setSegmentName(tripStatus == TripStatus.creatingSegment ? 'New Segment' :
+    setSegmentName(tripStatus == TripStatus.creatingSegment ? '' :
       props.segment.name)
   }, [tripStatus]);
 
@@ -57,23 +57,32 @@ export default function ModifyTripSegmentOverlay(props: { segment: TripSegment, 
       Math.round(
         millisecondsToDays(startDate.getTime() - endDate.getTime()) * 10) / 10 : 0);
 
+  const [clicked, setClicked] = useState(false)
+
+  function validateForm() {
+    return segmentName !== '';
+  }
+
   function handleEditSegment() {
-    if (tripStatus === TripStatus.creatingSegment) {
-      dispatch(addSegment({
-        name: segmentName,
-        startDate: startDate?.toDateString(),
-        endDate: endDate?.toDateString()
-      }))
-    }
-    else {
-      dispatch(
-        updateSegmentInfo(
-          {
-            index: props.segmentIndex,
-            name: segmentName,
-            startDate: startDate?.toDateString(),
-            endDate: endDate?.toDateString()
-          }))
+    setClicked(true)
+    if (validateForm()) {
+      if (tripStatus === TripStatus.creatingSegment) {
+        dispatch(addSegment({
+          name: segmentName,
+          startDate: startDate?.toDateString(),
+          endDate: endDate?.toDateString()
+        }))
+      }
+      else {
+        dispatch(
+          updateSegmentInfo(
+            {
+              index: props.segmentIndex,
+              name: segmentName,
+              startDate: startDate?.toDateString(),
+              endDate: endDate?.toDateString()
+            }))
+      }
     }
   }
 
@@ -104,6 +113,7 @@ export default function ModifyTripSegmentOverlay(props: { segment: TripSegment, 
         <Stack spacing={4}>
           <TextField
             required
+            error={!validateForm() && clicked}
             onChange={(e) => { setSegmentName(e.target.value) }}
             autoFocus
             value={segmentName}

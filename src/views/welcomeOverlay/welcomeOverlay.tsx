@@ -35,9 +35,18 @@ function WelcomeOverlay() {
 
   const [numOfDays, setNumOfDays] = useState<number>(startDate !== null && endDate !== null ? Math.round(millisecondsToDays(startDate.getTime() - endDate.getTime()) * 10) / 10 : 0);
 
+  const [clicked, setClicked] = useState(false)
+
+  function validateForm() {
+    return tripName !== '';
+  }
+
   function handleCreateTrip() {
-    dispatch(updateTripInfo({ name: tripName, startDate: startDate?.toDateString(), endDate: endDate?.toDateString() }))
-    dispatch(updateSegmentInfo({ index: 0, name: 'First Segment of ' + tripName, startDate: startDate?.toDateString(), endDate: endDate?.toDateString() }))
+    setClicked(true)
+    if (validateForm()) {
+      dispatch(updateTripInfo({ name: tripName, startDate: startDate?.toDateString(), endDate: endDate?.toDateString() }))
+      dispatch(updateSegmentInfo({ index: 0, name: 'First Segment of ' + tripName, startDate: startDate?.toDateString(), endDate: endDate?.toDateString() }))
+    }
   }
 
   //modified from https://bobbyhadz.com/blog/javascript-convert-days-to-milliseconds
@@ -58,6 +67,7 @@ function WelcomeOverlay() {
         <Stack spacing={4}>
           <TextField
             required
+            error={!validateForm() && clicked}
             onChange={(e) => { setTripName(e.target.value) }}
             autoFocus
             value={tripName}
