@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
-import { selectTripStatus, updateTripInfo, updateSegmentInfo, TripStatus, selectTrip } from '../../features/trip/tripslice';
+import { selectTripStatus, addSegment, updateSegmentInfo, TripStatus, deleteSegment, cancelEditSegment } from '../../features/trip/tripslice';
 
 import Stack from '@mui/material/Stack';
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -18,26 +18,72 @@ import { TripSegment } from '../../data/Trip/Trip';
 
 export default function ModifyTripSegmentOverlay(props: { segment: TripSegment, segmentIndex: number }) {
 
-  const tripStatus = useAppSelector(selectTripStatus);
+
   const dispatch = useAppDispatch();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
-  const [segmentName, setSegmentName] = useState<string>(props.segment.name)
-  useEffect(() => { setSegmentName(props.segment.name) }, [props.segment.name]);
+  const tripStatus = useAppSelector(selectTripStatus);
+
+  const [open, setOpen] = useState(
+    tripStatus === TripStatus.editingSegment ||
+    tripStatus === TripStatus.creatingSegment);
+  useEffect(() => {
+    setOpen(
+      tripStatus === TripStatus.editingSegment ||
+      tripStatus === TripStatus.creatingSegment)
+  }, [tripStatus]);
+
+  const [segmentName, setSegmentName] = useState<string>(
+    tripStatus == TripStatus.creatingSegment ? 'New Segment' :
+      props.segment.name)
+  useEffect(() => {
+    setSegmentName(tripStatus == TripStatus.creatingSegment ? 'New Segment' :
+      props.segment.name)
+  }, [tripStatus]);
 
   const [startDate, setStartDate] = useState<Date | null>(
-    new Date(props.segment.startDate),
+    tripStatus == TripStatus.creatingSegment ? new Date() :
+      new Date(props.segment.startDate),
   );
 
   const [endDate, setEndDate] = useState<Date | null>(
-    new Date(props.segment.endDate),
+    tripStatus == TripStatus.creatingSegment ? new Date() :
+      new Date(props.segment.endDate),
   );
 
-  const [numOfDays, setNumOfDays] = useState<number>(startDate !== null && endDate !== null ? Math.round(millisecondsToDays(startDate.getTime() - endDate.getTime()) * 10) / 10 : 0);
+  const [numOfDays, setNumOfDays] =
+    useState<number>(startDate !== null && endDate !== null ?
+      Math.round(
+        millisecondsToDays(startDate.getTime() - endDate.getTime()) * 10) / 10 : 0);
 
   function handleEditSegment() {
-    dispatch(updateSegmentInfo({ index: props.segmentIndex, name: segmentName, startDate: startDate?.toDateString(), endDate: endDate?.toDateString() }))
+    if (tripStatus === TripStatus.creatingSegment) {
+      dispatch(addSegment({
+        name: segmentName,
+        startDate: startDate?.toDateString(),
+        endDate: endDate?.toDateString()
+      }))
+    }
+    else {
+      dispatch(
+        updateSegmentInfo(
+          {
+            index: props.segmentIndex,
+            name: segmentName,
+            startDate: startDate?.toDateString(),
+            endDate: endDate?.toDateString()
+          }))
+    }
+  }
+
+  function handleCancel() {
+    if (tripStatus === TripStatus.creatingSegment) {
+      dispatch(deleteSegment({ index: props.segmentIndex }));
+    }
+    else {
+      dispatch(cancelEditSegment());
+    }
   }
 
   //modified from https://bobbyhadz.com/blog/javascript-convert-days-to-milliseconds
@@ -50,9 +96,9 @@ export default function ModifyTripSegmentOverlay(props: { segment: TripSegment, 
   }
 
   return (
-    <Dialog open={tripStatus === TripStatus.editingSegment } fullScreen={fullScreen}>
+    <Dialog open={open} fullScreen={fullScreen}>
       <DialogTitle sx={{ textAlign: 'center', paddingTop: 5 }}>
-        <span className='open-text' onClick={() => { console.log("clicked open") }}>OPEN</span> OR CREATE TRIP👇
+        {tripStatus === TripStatus.editingSegment ? 'EDIT' : 'CREATE'} SEGMENT👇
       </DialogTitle>
       <DialogContent sx={{ paddingLeft: 10, paddingRight: 10 }}>
         <Stack spacing={4}>
@@ -109,8 +155,11 @@ export default function ModifyTripSegmentOverlay(props: { segment: TripSegment, 
         </Stack>
       </DialogContent>
       <DialogActions>
+        <Button autoFocus onClick={handleCancel}>
+          Cancel
+        </Button>
         <Button autoFocus onClick={handleEditSegment}>
-          Create
+          {tripStatus === TripStatus.editingSegment ? 'Edit' : 'Create'}
         </Button>
       </DialogActions></Dialog>
   );

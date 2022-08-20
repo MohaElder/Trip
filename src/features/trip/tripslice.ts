@@ -6,24 +6,29 @@ import { EditorState, convertToRaw } from "draft-js";
 import type { RawDraftContentState } from "draft-js"
 import { v4 as uuidv4 } from 'uuid';
 
-import { itineraryTemplate } from '../../data/Templates/Template';
-
 export enum TripStatus {
     welcome = 'welcome',
     opened = 'opened',
     created = 'created',
     editing = 'editing',
-    editingSegment = '.editingSegment',
+    editingSegment = 'editingSegment',
+    creatingSegment = 'creatingSegment',
 }
 
 export interface TripState {
     Trip: Trip;
     status: TripStatus;
+    warn: boolean;
+    warnMsg: string;
+    activeSegmentIndex: number;
 }
 
 const initialState: TripState = {
     Trip: trip,
     status: TripStatus.welcome,
+    warn: false,
+    warnMsg: '',
+    activeSegmentIndex: 0,
 };
 
 export const tripSlice = createSlice({
@@ -43,10 +48,24 @@ export const tripSlice = createSlice({
             state.status = TripStatus.created;
         },
 
+        setActiveSegmentIndex: (state, action: PayloadAction<{ index: number }>) => {
+            state.activeSegmentIndex = action.payload.index;
+        },
+
         updateSegmentInfo: (state, action: PayloadAction<{ name?: string, startDate?: string, endDate?: string, index: number }>) => {
             state.Trip.tripSegments[action.payload.index].name = action.payload.name == undefined ? state.Trip.name : action.payload.name;
             state.Trip.tripSegments[action.payload.index].startDate = action.payload.startDate == undefined ? state.Trip.startDate : action.payload.startDate;
             state.Trip.tripSegments[action.payload.index].endDate = action.payload.endDate == undefined ? state.Trip.endDate : action.payload.endDate;
+            state.status = TripStatus.created;
+        },
+
+        deleteSegment: (state, action: PayloadAction<{ index: number }>) => {
+            state.activeSegmentIndex = 0;
+            state.status = TripStatus.created;
+        },
+
+        cancelEditSegment: (state) => {
+            console.log("aaa")
             state.status = TripStatus.created;
         },
 
@@ -247,47 +266,103 @@ export const tripSlice = createSlice({
             }
         },
 
-        addSegment: (state, action: PayloadAction<{ name: string }>) => {
-            function getLatestTripDate(): string {
-                let length = state.Trip.tripSegments.length;
-                return length === 0 ?
-                    state.Trip.startDate :
-                    state.Trip.tripSegments[length - 1].endDate;
+        addSegment: (state,
+            action: PayloadAction<{ name?: string, startDate?: string, endDate?: string }>) => {
+
+            function checkValidDateSegment(startDate: string, endDate: string): string {
+                let ourStartDate = new Date(startDate)
+                let ourEndDate = new Date(endDate)
+                let str = ''
+                state.Trip.tripSegments.forEach((segment) => {
+                    let theirStartDate = new Date(segment.startDate)
+                    let theirEndDate = new Date(segment.endDate)
+                    if (
+                        (ourStartDate >= theirStartDate && ourStartDate <= theirEndDate) ||
+                        (ourEndDate >= theirStartDate && ourEndDate <= theirEndDate) ||
+                        ourStartDate == theirStartDate || ourStartDate == theirEndDate ||
+                        ourEndDate == theirEndDate || ourEndDate == theirEndDate
+                    ) {
+                        str += segment.name + ', ';
+                    }
+                })
+
+                return str.substring(0, str.length - 2);
             }
 
-            let newItinenary = structuredClone(itineraryTemplate);
-            newItinenary.date = getLatestTripDate();
-            newItinenary.id = uuidv4();
+            function checkValidDateTrip(startDate: string, endDate: string): boolean {
+                let ourStartDate = new Date(startDate)
+                let ourEndDate = new Date(endDate)
+                let theirStartDate = new Date(state.Trip.startDate)
+                let theirEndDate = new Date(state.Trip.endDate)
 
-            state.Trip.tripSegments = [
-                ...state.Trip.tripSegments,
-                {
-                    name: action.payload.name, id: uuidv4(), startDate: getLatestTripDate(), endDate: state.Trip.endDate, notes: [{
-                        id: uuidv4(),
-                        placeholder: 'I wanna go to...',
-                        data: convertToRaw(EditorState.createEmpty().getCurrentContent()),
-                    },
-                    {
-                        id: uuidv4(),
-                        placeholder: 'I want to...',
-                        data: convertToRaw(EditorState.createEmpty().getCurrentContent()),
-                    },
-                    {
-                        id: uuidv4(),
-                        placeholder: 'I wanna eat...',
-                        data: convertToRaw(EditorState.createEmpty().getCurrentContent()),
-                    },
-                    {
-                        id: uuidv4(),
-                        placeholder: 'I wanna stay at...',
-                        data: convertToRaw(EditorState.createEmpty().getCurrentContent()),
-                    }],
-                    budgets: [], itineraries: []
+                return !(ourStartDate < theirStartDate || ourEndDate > theirEndDate);
+            }
+
+            if (action.payload.name !== undefined
+                && action.payload.startDate !== undefined
+                && action.payload.endDate !== undefined) {
+
+                if (!checkValidDateTrip(action.payload.startDate, action.payload.endDate)) {
+                    state.warnMsg = 'Your proposed dates have conflicts with the Trip date. \
+                    Please either modify your trip date or your segment date to proceed.'
+                    state.warn = true;
+                    return;
                 }
-            ]
+
+                let str = checkValidDateSegment(action.payload.startDate, action.payload.endDate);
+
+                if (str !== '') {
+                    state.warnMsg = 'There are date conflict among the following trip segments: \
+                    ' + str + '. Please either adjust the dates of those or this segment to proceed.'
+                    state.warn = true;
+                    return;
+                }
+                state.Trip.tripSegments = [
+                    ...state.Trip.tripSegments,
+                    {
+                        name: action.payload.name,
+                        id: uuidv4(),
+                        startDate: action.payload.startDate,
+                        endDate: action.payload.endDate,
+                        notes: [{
+                            id: uuidv4(),
+                            placeholder: 'I wanna go to...',
+                            data: convertToRaw(EditorState.createEmpty().getCurrentContent()),
+                        },
+                        {
+                            id: uuidv4(),
+                            placeholder: 'I want to...',
+                            data: convertToRaw(EditorState.createEmpty().getCurrentContent()),
+                        },
+                        {
+                            id: uuidv4(),
+                            placeholder: 'I wanna eat...',
+                            data: convertToRaw(EditorState.createEmpty().getCurrentContent()),
+                        },
+                        {
+                            id: uuidv4(),
+                            placeholder: 'I wanna stay at...',
+                            data: convertToRaw(EditorState.createEmpty().getCurrentContent()),
+                        }],
+                        budgets: [], itineraries: []
+                    }
+                ]
+
+                state.activeSegmentIndex = state.Trip.tripSegments.length - 1;
+
+                state.status = TripStatus.created
+            }
         },
 
         addItinenary: (state, action: PayloadAction<{ segmentIndex: number }>) => {
+
+            function checkValidDate(date: string): boolean {
+                let d1 = new Date(date)
+                let d2 = new Date(state.Trip
+                    .tripSegments[action.payload.segmentIndex].endDate)
+                return d1 <= d2;
+            }
+
             function getLatestTripDate(): string {
                 let length = state.Trip
                     .tripSegments[action.payload.segmentIndex].itineraries.length;
@@ -302,12 +377,22 @@ export const tripSlice = createSlice({
                 date.setDate(date.getDate() + 1);
                 return date.toString();
             }
+
+            let date = getLatestTripDate();
+            if (!checkValidDate(date)) {
+                console.log("invalid date!")
+                state.warn = true;
+                state.warnMsg = "You can't add anymore itinenary \
+                 because you don't have that many days for this segment. \
+                 Edit the segment's date to enable more itinenaries in this segment."
+                return;
+            }
             state.Trip.tripSegments[action.payload.segmentIndex].itineraries = [
                 ...state.Trip.tripSegments[action.payload.segmentIndex].itineraries,
                 {
                     open: false,
                     id: uuidv4(),
-                    date: getLatestTripDate(),
+                    date: date,
                     start: 'Start',
                     end: 'End',
                     tripInfo: 'Trip Info',
@@ -356,6 +441,10 @@ export const tripSlice = createSlice({
                 }
             ]
         },
+
+        closeWarn: (state) => {
+            state.warn = false;
+        }
     },
 
 });
@@ -365,10 +454,17 @@ export const { updateTripInfo, updateSegmentInfo, addNote, addNoteSegment,
     deleteNoteSegment, addSegment, updateCommuteInfo,
     updateStayInfo, updateItinenary, updateDayItinenary,
     addItinenary, addDayItinenary, deleteDayItinenary, deleteItinenary,
-    setTripStatus, addBudget, updateBudget, deleteBudget } = tripSlice.actions;
+    setTripStatus, addBudget, updateBudget, deleteBudget, closeWarn, deleteSegment,
+    cancelEditSegment, setActiveSegmentIndex } = tripSlice.actions;
 
 export const selectTrip = (state: RootState) => state.trip.tripReducer.Trip;
 
 export const selectTripStatus = (state: RootState) => state.trip.tripReducer.status;
+
+export const selectWarn = (state: RootState) => state.trip.tripReducer.warn;
+
+export const selectWarnMsg = (state: RootState) => state.trip.tripReducer.warnMsg;
+
+export const selectActiveSegmentIndex = (state: RootState) => state.trip.tripReducer.activeSegmentIndex;
 
 export default tripSlice.reducer;

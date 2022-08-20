@@ -37,7 +37,7 @@ function WelcomeOverlay() {
 
   function handleCreateTrip() {
     dispatch(updateTripInfo({ name: tripName, startDate: startDate?.toDateString(), endDate: endDate?.toDateString() }))
-    dispatch(updateSegmentInfo({ index: 0, name: tripName, startDate: startDate?.toDateString(), endDate: endDate?.toDateString() }))
+    dispatch(updateSegmentInfo({ index: 0, name: 'First Segment of ' + tripName, startDate: startDate?.toDateString(), endDate: endDate?.toDateString() }))
   }
 
   //modified from https://bobbyhadz.com/blog/javascript-convert-days-to-milliseconds
