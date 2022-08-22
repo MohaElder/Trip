@@ -21,6 +21,7 @@ import ModifyTripSegmentOverlay from '../../components/modifyTripSegmentOverlay/
 import EditIcon from '@mui/icons-material/Edit';
 import BudgetChart from '../../components/budgetChart/budgetChart';
 import WarningPopUp from '../../components/warningPopUp/warningPopUp';
+import Map from '../../components/map/map';
 
 export default function TripSegment(props: { tripSegments: Array<TypeTripSegment> }) {
 
@@ -101,6 +102,10 @@ export default function TripSegment(props: { tripSegments: Array<TypeTripSegment
                     Budget
                 </Typography>
                 <BudgetChart tripSegment={props.tripSegments[activeTripSegmentIndex]} segmentIndex={activeTripSegmentIndex} />
+                <Typography variant="h5" gutterBottom component="div" sx={{ paddingTop: 5 }}>
+                    Map
+                </Typography>
+                <Map></Map>
             </div>
         </Container>
     );
