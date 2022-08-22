@@ -75,7 +75,7 @@ export default function Budget(props: {
                             name === '' ?
                                 <Button color='primary' variant="outlined" onClick={() => { setEditName(true) }}>Add Name</Button> :
                                 props.budget.isStay ?
-                                    <Tooltip title="Edit Stay Budget from Stay Card!" placement="top-start">
+                                    <Tooltip title="Edit Stay Budget from Stay Card!" placement="top">
                                         <span onClick={() => { setEditName(true) }}>{name}</span>
                                     </Tooltip> :
                                     <span onClick={() => { setEditName(true) }}>{name}</span>
@@ -104,15 +104,23 @@ export default function Budget(props: {
                         <span onClick={() => { setEditQuantity(true) }}>x{quantity}</span>
                 }</TableCell>
                 <TableCell align='right'>
-                    <IconButton aria-label="delete" color="error"
-                        onClick={() => {
-                            dispatch(deleteBudget({
-                                tripSegmentIndex: props.segmentIndex,
-                                budgetIndex: props.budIdx,
-                            }))
-                        }}>
-                        <DeleteIcon />
-                    </IconButton>
+                    {
+                        props.budget.isStay ?
+                            <Tooltip title="Delete the itinenary to delete this budget!" placement="top">
+                                <IconButton aria-label="delete" color="info">
+                                    <DeleteIcon />
+                                </IconButton></Tooltip>
+                            :
+                            <IconButton aria-label="delete" color="error"
+                                onClick={() => {
+                                    dispatch(deleteBudget({
+                                        tripSegmentIndex: props.segmentIndex,
+                                        budgetIndex: props.budIdx,
+                                    }))
+                                }}>
+                                <DeleteIcon />
+                            </IconButton>
+                    }
                 </TableCell>
             </TableRow>
         </React.Fragment >

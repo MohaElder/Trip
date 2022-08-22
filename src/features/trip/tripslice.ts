@@ -183,6 +183,15 @@ export const tripSlice = createSlice({
         deleteItinenary: (state, action: PayloadAction<{
             tripSegmentIndex: number, itinenaryIndex: number
         }>) => {
+            let stayBudgetIdx = state.Trip.tripSegments[action.payload.tripSegmentIndex].budgets.findIndex((budget) => {
+                return budget.id === state.Trip.tripSegments[action.payload.tripSegmentIndex]
+                .itineraries[action.payload.itinenaryIndex].stayInfo.id
+            });
+
+            if(stayBudgetIdx !== -1){
+                state.Trip.tripSegments[action.payload.tripSegmentIndex].budgets.splice(stayBudgetIdx, 1)
+            }
+            
             state.Trip.tripSegments[action.payload.tripSegmentIndex]
                 .itineraries.splice(action.payload.itinenaryIndex, 1)
         },
