@@ -3,4 +3,5 @@ export type Budget = {
     name: string,
     price: number,
     quantity: number,
+    isStay: boolean,
 }

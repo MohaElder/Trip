@@ -9,7 +9,7 @@ export type Itinerary = {
     end: string;
     tripInfo: string;
     commuteInfo: CommuteInfo | null;
-    stayInfo: StayInfo | null;
+    stayInfo: StayInfo;
     ps: string;
     dailyItinerary: Array<DailyItinerary>
 }

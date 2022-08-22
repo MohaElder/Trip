@@ -176,6 +176,7 @@ export const tripSlice = createSlice({
                     org.price : action.payload.price,
                 quantity: action.payload.quantity === undefined ?
                     org.quantity : action.payload.quantity,
+                isStay: org.isStay,
             }
         },
 
@@ -257,12 +258,43 @@ export const tripSlice = createSlice({
                 name: string, location: string,
                 price: number
             }>) => {
+
+            let org_id = state.Trip.tripSegments[action.payload.segmentIndex].itineraries[action.payload.itinenaryIndex].stayInfo.id
             state.Trip.tripSegments[action.payload.segmentIndex].itineraries[action.payload.itinenaryIndex].stayInfo = {
+                id: org_id,
                 type: action.payload.type,
                 name: action.payload.name,
                 price: action.payload.price,
                 link: action.payload.link,
                 location: action.payload.location,
+            }
+
+            let stay_budget_idx = state.Trip.tripSegments[action.payload.segmentIndex].budgets.findIndex((budget) => {
+                return budget.id === org_id && budget.isStay;
+            })
+
+            if (stay_budget_idx === -1) {
+                console.log("Hey!")
+                state.Trip.tripSegments[action.payload.segmentIndex].budgets = [
+                    ...state.Trip.tripSegments[action.payload.segmentIndex].budgets,
+                    {
+                        id: org_id,
+                        name: action.payload.name,
+                        price: action.payload.price,
+                        quantity: 1,
+                        isStay: true,
+                    }
+                ]
+            }
+            else {
+                console.log("change")
+                state.Trip.tripSegments[action.payload.segmentIndex].budgets[stay_budget_idx] = {
+                    id: org_id,
+                    name: action.payload.name,
+                    price: action.payload.price,
+                    quantity: 1,
+                    isStay: true,
+                }
             }
         },
 
@@ -398,6 +430,7 @@ export const tripSlice = createSlice({
                     tripInfo: 'Trip Info',
                     commuteInfo: null,
                     stayInfo: {
+                        id: uuidv4(),
                         type: 'Hotel',
                         name: '',
                         location: '',
@@ -429,7 +462,8 @@ export const tripSlice = createSlice({
                     id: uuidv4(),
                     name: 'New Item',
                     price: 0,
-                    quantity: 1
+                    quantity: 1,
+                    isStay: false,
                 }
             ]
         },

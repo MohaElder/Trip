@@ -15,34 +15,27 @@ import type { TripSegment } from '../../data/Trip/Trip';
 import { addBudget } from '../../features/trip/tripslice';
 import Budget from '../budget/budget';
 import { type Budget as TypeBudget } from '../../data/Budget/Budget';
+import { useEffect, useState } from 'react';
 
 export default function BudgetChart(props: { tripSegment: TripSegment, segmentIndex: number }) {
     const dispatch = useAppDispatch();
-    const budgets = props.tripSegment.budgets.map((budget, idx) => (
+
+    const [budgetsData, setBudegetsData] = useState(props.tripSegment.budgets);
+    useEffect(() => {
+        setBudegetsData(props.tripSegment.budgets)
+    }, [props.tripSegment.budgets]);
+
+    const budgets = budgetsData.map((budget, idx) => (
         <Budget key={budget.id}
             segmentIndex={props.segmentIndex}
             budget={budget}
-            budIdx={idx} />
+            budIdx={idx}
+        />
     ))
+
 
     function handleNewBudget() {
         dispatch(addBudget({ segmentIndex: props.segmentIndex }))
-    }
-
-    function GetStayBudget() {
-        let stayBudgets: Array<TypeBudget> = []
-        props.tripSegment.itineraries.forEach((it) => {
-            if (it.stayInfo !== null) {
-                stayBudgets.push({
-                    id: 'generated-budget',
-                    name: it.stayInfo.name,
-                    price: it.stayInfo.price,
-                    quantity: 1
-                })
-            }
-        })
-
-        return stayBudgets;
     }
 
 
@@ -68,7 +61,6 @@ export default function BudgetChart(props: { tripSegment: TripSegment, segmentIn
                     </TableHead>
                     <TableBody>
                         {budgets}
-
                         <TableRow>
                             <TableCell>Total: ${calculateTotalPrice()} </TableCell>
                         </TableRow>
