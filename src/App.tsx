@@ -22,9 +22,7 @@ import swanseaBold from './font/Swansea/SwanseaBold.ttf'
 import swanseaBoldItalic from './font/Swansea/SwanseaBoldItalic.ttf'
 import swanseaItalic from './font/Swansea/SwanseaItalic.ttf'
 import AppBar from "@mui/material/AppBar/AppBar";
-import Toolbar from "@mui/material/Toolbar/Toolbar";
-
-declare module '*.ttf';
+import Toolbar from "@mui/material/Toolbar/Toolbar";  
 
 declare module '@mui/material/styles' {
   interface Theme {
