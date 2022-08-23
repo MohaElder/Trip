@@ -33,7 +33,7 @@ function WelcomeOverlay() {
     new Date(trip.endDate),
   );
 
-  const [numOfDays, setNumOfDays] = useState<number>(startDate !== null && endDate !== null ? Math.round(millisecondsToDays(startDate.getTime() - endDate.getTime()) * 10) / 10 : 0);
+  const [numOfDays, setNumOfDays] = useState<number>(startDate !== null && endDate !== null ? Math.round(millisecondsToDays(endDate.getTime() - startDate.getTime()) * 10) / 10 : 0);
 
   const [clicked, setClicked] = useState(false)
 
