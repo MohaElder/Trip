@@ -4,6 +4,7 @@ import type { Itinerary } from '../Itinerary/Itinerary';
 import { v4 as uuidv4 } from 'uuid';
 import { EditorState, convertToRaw } from "draft-js";
 import { Budget } from '../Budget/Budget';
+import { GeoNode } from '../GeoNode/GeoNode';
 
 export type TripSegment = {
     id: string;
@@ -13,6 +14,7 @@ export type TripSegment = {
     notes: Array<Note>;
     budgets: Array<Budget>;
     itineraries: Array<Itinerary>;
+    interestPoints: Array<GeoNode>;
 }
 
 export type Trip = {
@@ -43,8 +45,8 @@ const trip: Trip = {
     budgets: [],
     tripSegments: [
         {
-            name: 'Default', id: uuidv4(), 
-            startDate: '', 
+            name: 'Default', id: uuidv4(),
+            startDate: '',
             endDate: '', notes: [{
                 id: uuidv4(),
                 placeholder: 'I wanna go to...',
@@ -65,8 +67,8 @@ const trip: Trip = {
                 placeholder: 'I wanna stay at...',
                 data: convertToRaw(EditorState.createEmpty().getCurrentContent()),
             }],
-            budgets: [], itineraries: []
-        }
+            budgets: [], itineraries: [], interestPoints: [],
+        },
     ],
 }
 
