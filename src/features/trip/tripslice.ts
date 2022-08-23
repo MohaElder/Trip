@@ -5,6 +5,7 @@ import { trip } from '../../data/Trip/Trip';
 import { EditorState, convertToRaw } from "draft-js";
 import type { RawDraftContentState } from "draft-js"
 import { v4 as uuidv4 } from 'uuid';
+import { getAutoCompleteLocation } from '../../api/map';
 
 export enum TripStatus {
     welcome = 'welcome',
@@ -74,6 +75,8 @@ export const tripSlice = createSlice({
                 ...state.Trip.notes,
                 { placeholder: 'write anything...', id: uuidv4(), data: convertToRaw(EditorState.createEmpty().getCurrentContent()) }
             ]
+
+            getAutoCompleteLocation('Watson Lake')
         },
 
         addNoteSegment: (state, action: PayloadAction<{ index: number }>) => {
