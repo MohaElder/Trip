@@ -10,6 +10,24 @@ export default function TripMap() {
     const UseMapExample = () => {
         const { map, setRotation, mapkit } = useMap()
 
+        // var search = new mapkit.Search({ region: map.region });
+
+        // search.search("coffee shop", function (error: any, data: any) {
+        //     if (error) {
+        //         // Handle search error
+        //         return;
+        //     }
+        //     var annotations = data.places.map(function (place: any) {
+        //         var annotation = new mapkit.MarkerAnnotation(place.coordinate);
+        //         annotation.title = place.name;
+        //         annotation.subtitle = place.formattedAddress;
+        //         annotation.color = "#9B6134";
+        //         return annotation;
+        //     });
+        //     map.showItems(annotations);
+        // });
+
+
         return (
             <>
                 {/* <button onClick={() => map.setRotationAnimated(50)}>rotate to 50deg!</button>
@@ -20,7 +38,9 @@ export default function TripMap() {
                         longitude: -117.232955,
                         latitudeSpan: 0.5,
                         longitudeSpan: 0.5,
-                    }}>
+                    }}
+                        tintColor={'#526649'}
+                    >
                         <Marker
                             latitude={32.734179}
                             longitude={-117.232955}
