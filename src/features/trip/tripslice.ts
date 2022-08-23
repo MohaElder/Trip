@@ -1,11 +1,11 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RootState, AppThunk } from '../../app/store';
+import { RootState } from '../../app/store';
 import type { Trip } from '../../data/Trip/Trip';
 import { trip } from '../../data/Trip/Trip';
 import { EditorState, convertToRaw } from "draft-js";
 import type { RawDraftContentState } from "draft-js"
 import { v4 as uuidv4 } from 'uuid';
-import { getAutoCompleteLocation } from '../../api/map';
+import { GeoNode } from '../../data/GeoNode/GeoNode';
 
 export enum TripStatus {
     welcome = 'welcome',
@@ -66,7 +66,6 @@ export const tripSlice = createSlice({
         },
 
         cancelEditSegment: (state) => {
-            console.log("aaa")
             state.status = TripStatus.created;
         },
 
@@ -75,8 +74,6 @@ export const tripSlice = createSlice({
                 ...state.Trip.notes,
                 { placeholder: 'write anything...', id: uuidv4(), data: convertToRaw(EditorState.createEmpty().getCurrentContent()) }
             ]
-
-            getAutoCompleteLocation('Watson Lake')
         },
 
         addNoteSegment: (state, action: PayloadAction<{ index: number }>) => {
@@ -188,13 +185,13 @@ export const tripSlice = createSlice({
         }>) => {
             let stayBudgetIdx = state.Trip.tripSegments[action.payload.tripSegmentIndex].budgets.findIndex((budget) => {
                 return budget.id === state.Trip.tripSegments[action.payload.tripSegmentIndex]
-                .itineraries[action.payload.itinenaryIndex].stayInfo.id
+                    .itineraries[action.payload.itinenaryIndex].stayInfo.id
             });
 
-            if(stayBudgetIdx !== -1){
+            if (stayBudgetIdx !== -1) {
                 state.Trip.tripSegments[action.payload.tripSegmentIndex].budgets.splice(stayBudgetIdx, 1)
             }
-            
+
             state.Trip.tripSegments[action.payload.tripSegmentIndex]
                 .itineraries.splice(action.payload.itinenaryIndex, 1)
         },
@@ -388,7 +385,7 @@ export const tripSlice = createSlice({
                             placeholder: 'I wanna stay at...',
                             data: convertToRaw(EditorState.createEmpty().getCurrentContent()),
                         }],
-                        budgets: [], itineraries: []
+                        budgets: [], itineraries: [], interestPoints: [],
                     }
                 ]
 
@@ -482,7 +479,15 @@ export const tripSlice = createSlice({
 
         closeWarn: (state) => {
             state.warn = false;
+        },
+
+        addInterestPoint: (state, action: PayloadAction<{ node: GeoNode, segmentIndex: number }>) => {
+            state.Trip.tripSegments[action.payload.segmentIndex].interestPoints = [
+                ...state.Trip.tripSegments[action.payload.segmentIndex].interestPoints,
+                action.payload.node
+            ];
         }
+
     },
 
 });
@@ -493,7 +498,7 @@ export const { updateTripInfo, updateSegmentInfo, addNote, addNoteSegment,
     updateStayInfo, updateItinenary, updateDayItinenary,
     addItinenary, addDayItinenary, deleteDayItinenary, deleteItinenary,
     setTripStatus, addBudget, updateBudget, deleteBudget, closeWarn, deleteSegment,
-    cancelEditSegment, setActiveSegmentIndex } = tripSlice.actions;
+    cancelEditSegment, setActiveSegmentIndex, addInterestPoint } = tripSlice.actions;
 
 export const selectTrip = (state: RootState) => state.trip.tripReducer.Trip;
 
