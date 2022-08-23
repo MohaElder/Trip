@@ -22,6 +22,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import BudgetChart from '../../components/budgetChart/budgetChart';
 import WarningPopUp from '../../components/warningPopUp/warningPopUp';
 import Map from '../../components/map/map';
+import MapLayer from '../../components/mapLayer/mapLayer';
 
 export default function TripSegment(props: { tripSegments: Array<TypeTripSegment> }) {
 
@@ -105,7 +106,8 @@ export default function TripSegment(props: { tripSegments: Array<TypeTripSegment
                 <Typography variant="h5" gutterBottom component="div" sx={{ paddingTop: 5 }}>
                     Map
                 </Typography>
-                <Map></Map>
+                <MapLayer segmentIndex={activeTripSegmentIndex}></MapLayer>
+                <Map interestPoints={props.tripSegments[activeTripSegmentIndex].interestPoints}></Map>
             </div>
         </Container>
     );

@@ -1,62 +1,54 @@
-import React, { Component, PropsWithChildren } from "react";
+import React, { Component, PropsWithChildren, useState } from "react";
 import { MapkitProvider, Map, useMap, Marker } from 'react-mapkit'
+import { useAppSelector, useAppDispatch } from '../../app/hooks';
+import { GeoNode } from "../../data/GeoNode/GeoNode";
+import { getAutoCompleteLocationThunk } from "../../features/map/mapslice";
 
 import './styles.css'
 
-export default function TripMap() {
+export default function TripMap(props: { interestPoints: Array<GeoNode> }) {
 
     const token = 'eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IkxBOVlSNFcyMjQifQ.eyJpYXQiOjE2NjExMzc2MjAuMjMzLCJpc3MiOiJOSFhWVFlCUU1VIn0.LfDn9tcHqJdVzMBqw8xg9aaSKsF1nq5ERrIGeMKlXpg4-GiY75HW4sGiO_IF-nt_5mr8ddEIu0KBr9-6vulITA'
 
+    const dispatch = useAppDispatch();
+
     const UseMapExample = () => {
-        const { map, setRotation, mapkit } = useMap()
-
-        // var search = new mapkit.Search({ region: map.region });
-
-        // search.search("coffee shop", function (error: any, data: any) {
-        //     if (error) {
-        //         // Handle search error
-        //         return;
-        //     }
-        //     var annotations = data.places.map(function (place: any) {
-        //         var annotation = new mapkit.MarkerAnnotation(place.coordinate);
-        //         annotation.title = place.name;
-        //         annotation.subtitle = place.formattedAddress;
-        //         annotation.color = "#9B6134";
-        //         return annotation;
-        //     });
-        //     map.showItems(annotations);
-        // });
-
-
+        const { map, setCenter, mapkit } = useMap()
         return (
             <>
-                {/* <button onClick={() => map.setRotationAnimated(50)}>rotate to 50deg!</button>
-                <button onClick={() => setRotation(50)}>same as the above, but using the react-mapkit provided function.</button> */}
                 <div className='map'>
-                    <Map center={[32.734179, -117.232955]} region={{
-                        latitude: 32.734179,
-                        longitude: -117.232955,
-                        latitudeSpan: 0.5,
-                        longitudeSpan: 0.5,
-                    }}
+                    <Map
+                        tokenOrCallback={token}
+                        visibleMapRect={[0, 0.2, 0.3, 0.3]}
+                        center={[32.734179, -117.232955]} region={{
+                            latitude: 32.734179,
+                            longitude: -117.232955,
+                            latitudeSpan: 0.5,
+                            longitudeSpan: 0.5,
+                        }}
                         tintColor={'#526649'}
                     >
-                        <Marker
-                            latitude={32.734179}
-                            longitude={-117.232955}
-                            title={'Tea here!'}
-                            subtitle={'coffee too ☕'}
-                        /></Map>
+                        {
+                            props.interestPoints.map((node) => {
+                                return <Marker
+                                    
+                                    latitude={node.coordinate.coordinates[1]}
+                                    longitude={node.coordinate.coordinates[0]}
+                                    title={node.properties.label}
+                                    subtitle={'coffee too ☕'}
+                                />
+                            })
+                        }
+                    </Map>
                 </div>
-
             </>
         )
     }
 
     return (
-        <MapkitProvider tokenOrCallback={token}>
-            <UseMapExample />
-        </MapkitProvider>
+
+        <UseMapExample />
+
     )
 }
 
