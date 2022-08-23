@@ -55,7 +55,7 @@ export default function ModifyTripSegmentOverlay(props: { segment: TripSegment, 
   const [numOfDays, setNumOfDays] =
     useState<number>(startDate !== null && endDate !== null ?
       Math.round(
-        millisecondsToDays(startDate.getTime() - endDate.getTime()) * 10) / 10 : 0);
+        millisecondsToDays(endDate.getTime() - startDate.getTime()) * 10) / 10 : 0);
 
   const [clicked, setClicked] = useState(false)
 
