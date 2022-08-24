@@ -27,7 +27,7 @@ import StayStack from '../stayStack/stayStack';
 import DayIt from '../DayItinenary/DayItinenary';
 
 export default function Itinenary(props: {
-    segmentIndex: number, itinenary: Itinerary, itIdx: number
+    segmentIndex: number, itinenary: Itinerary, itIdx: number, viewOnly?: boolean
 }) {
 
     const dispatch = useAppDispatch();
@@ -91,19 +91,22 @@ export default function Itinenary(props: {
             <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
                 <TableCell>
                     <Typography variant="h6" component="div">
-                        <IconButton
-                            aria-label="expand row"
-                            size="small"
-                            onClick={() => { updateItinenaryInfo('open') }}
-                        >
-                            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-                        </IconButton>
+                        {props.viewOnly === true ?
+                            <></> :
+                            <IconButton
+                                aria-label="expand row"
+                                size="small"
+                                onClick={() => { updateItinenaryInfo('open') }}
+                            >
+                                {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                            </IconButton>
+                        }
                         {parseDate(props.itinenary.date)}
                     </Typography>
                 </TableCell>
                 <TableCell component="th" scope="row">
                     {
-                        editStart ?
+                        editStart && !props.viewOnly ?
                             <TextField autoFocus={true} value={start} id="standard-basic" onChange={(e) => { setStart(e.target.value) }}
                                 onBlur={() => { updateItinenaryInfo('start') }} placeholder='start' variant="standard" />
                             :
@@ -113,7 +116,7 @@ export default function Itinenary(props: {
                     }
                 </TableCell>
                 <TableCell>{
-                    editEnd ?
+                    editEnd && !props.viewOnly ?
                         <TextField autoFocus={true} value={end} id="standard-basic" onChange={(e) => { setEnd(e.target.value) }}
                             onBlur={() => { updateItinenaryInfo('end') }} placeholder='end' variant="standard" />
                         :
@@ -122,7 +125,7 @@ export default function Itinenary(props: {
                             <span onClick={() => { setEditEnd(true) }}>{end}</span>
                 }</TableCell>
                 <TableCell>{
-                    editTripInfo ?
+                    editTripInfo && !props.viewOnly ?
                         <TextField
                             autoFocus={true}
                             value={tripInfo}
@@ -139,11 +142,11 @@ export default function Itinenary(props: {
                             <span onClick={() => { setEditTripInfo(true) }}>{tripInfo}</span>
                 }</TableCell>
                 <TableCell>
-                    <CommuteStack segmentIndex={props.segmentIndex} commuteInfo={props.itinenary.commuteInfo} itineraryIndex={props.itIdx} />
+                    <CommuteStack viewOnly={props.viewOnly} segmentIndex={props.segmentIndex} commuteInfo={props.itinenary.commuteInfo} itineraryIndex={props.itIdx} />
                 </TableCell>
-                <TableCell><StayStack segmentIndex={props.segmentIndex} stayInfo={props.itinenary.stayInfo} itineraryIndex={props.itIdx} /></TableCell>
+                <TableCell><StayStack viewOnly={props.viewOnly} segmentIndex={props.segmentIndex} stayInfo={props.itinenary.stayInfo} itineraryIndex={props.itIdx} /></TableCell>
                 <TableCell>{
-                    editPs ?
+                    editPs && !props.viewOnly ?
                         <TextField
                             autoFocus={true}
                             value={ps}
@@ -174,29 +177,34 @@ export default function Itinenary(props: {
             <TableRow>
                 <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
                     <Collapse in={open} timeout="auto" unmountOnExit>
-                        <Box sx={{ margin: 1 }}>
-                            <Typography variant="h6" gutterBottom component="div">
-                                For the Day
-                            </Typography>
-                            <Button onClick={handleNewDayItinenary} variant="contained" endIcon={<AddIcon />}>
-                                New Task
-                            </Button>
-                            <Table size="small" aria-label="purchases">
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell>Time</TableCell>
-                                        <TableCell>Location</TableCell>
-                                        <TableCell>Info</TableCell>
-                                        <TableCell>Transportation</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {props.itinenary.dailyItinerary.map((itinerary, idx) => (
-                                        <DayIt day={itinerary} key={idx} segmentIndex={props.segmentIndex} dayIdx={idx} itIdx={props.itIdx} />
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </Box>
+                        {
+                            props.viewOnly === true ?
+                                <></> :
+                                <Box sx={{ margin: 1 }}>
+                                    <Typography variant="h6" gutterBottom component="div">
+                                        For the Day
+                                    </Typography>
+                                    <Button onClick={handleNewDayItinenary} variant="contained" endIcon={<AddIcon />}>
+                                        New Task
+                                    </Button>
+                                    <Table size="small" aria-label="purchases">
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell>Time</TableCell>
+                                                <TableCell>Location</TableCell>
+                                                <TableCell>Info</TableCell>
+                                                <TableCell>Transportation</TableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            {props.itinenary.dailyItinerary.map((itinerary, idx) => (
+                                                <DayIt day={itinerary} key={idx} segmentIndex={props.segmentIndex} dayIdx={idx} itIdx={props.itIdx} />
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </Box>
+                        }
+
                     </Collapse>
                 </TableCell>
             </TableRow>
