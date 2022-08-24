@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
-import { selectTripStatus, updateTripInfo, updateSegmentInfo, TripStatus, selectTrip } from '../../features/trip/tripslice';
+import { selectTripStatus, updateTripInfo, updateSegmentInfo, TripStatus, selectTrip, readTrip } from '../../features/trip/tripslice';
 
 import Stack from '@mui/material/Stack';
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -14,6 +14,7 @@ import TextField from '@mui/material/TextField';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import FileReaderInput from 'react-file-reader-input';
 
 function WelcomeOverlay() {
 
@@ -51,6 +52,16 @@ function WelcomeOverlay() {
     }
   }
 
+  const handleReadFile = (e: any, results: any[]) => {
+    results.forEach((result: [any, any]) => {
+      const [e, file] = result;
+      file.text()
+        .then(
+          (res: string) => { console.log(JSON.parse(res)); dispatch(readTrip({trip: JSON.parse(res)})) })
+    });
+  }
+
+
   //modified from https://bobbyhadz.com/blog/javascript-convert-days-to-milliseconds
   function daysToMilliseconds(days: number): number {
     return days * 24 * 60 * 60 * 1000;
@@ -63,7 +74,11 @@ function WelcomeOverlay() {
   return (
     <Dialog open={tripStatus == TripStatus.welcome || tripStatus == TripStatus.editing} fullScreen={fullScreen}>
       <DialogTitle sx={{ textAlign: 'center', paddingTop: 5 }}>
-        <span className='open-text' onClick={() => { console.log("clicked open") }}>OPEN</span> OR CREATE TRIP👇
+        <FileReaderInput as="binary" id="my-file-input"
+          onChange={handleReadFile}>
+          <span className='open-text'>OPEN</span> OR CREATE TRIP👇
+        </FileReaderInput>
+       
       </DialogTitle>
       <DialogContent sx={{ paddingLeft: 10, paddingRight: 10 }}>
         <Stack spacing={4}>
