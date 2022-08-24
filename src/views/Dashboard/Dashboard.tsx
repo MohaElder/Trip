@@ -8,6 +8,7 @@ import Button from '@mui/material/Button/Button';
 import EditIcon from '@mui/icons-material/Edit';
 import WelcomeOverlay from '../welcomeOverlay/welcomeOverlay';
 import { setTripStatus, TripStatus } from '../../features/trip/tripslice';
+import TripCalendar from '../../components/tripCalendar/tripCalendar';
 
 interface IProps {
     trip: Trip
@@ -49,6 +50,10 @@ const Dashboard: React.FC<IProps> = (props) => {
                 Brainstorm Section
             </Typography>
             <Notes notes={props.trip.notes} />
+            <Typography variant="h5" gutterBottom component="div" sx={{ paddingTop: 5 }}>
+                Trip Calendar
+            </Typography>
+            <TripCalendar trip={props.trip} />
         </Container>
 
     )

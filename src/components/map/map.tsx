@@ -9,7 +9,7 @@ import './styles.css'
 
 export default function TripMap(props: { interestPoints: Array<GeoNode> }) {
 
-    const token = '***REMOVED***'
+    const token = 'eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IkxBOVlSNFcyMjQifQ.eyJpYXQiOjE2NjExMzc2MjAuMjMzLCJpc3MiOiJOSFhWVFlCUU1VIn0.LfDn9tcHqJdVzMBqw8xg9aaSKsF1nq5ERrIGeMKlXpg4-GiY75HW4sGiO_IF-nt_5mr8ddEIu0KBr9-6vulITA'
 
     const dispatch = useAppDispatch();
 
