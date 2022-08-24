@@ -41,7 +41,8 @@ export default function CommuteStack(props: {
     segmentIndex: number,
     itineraryIndex: number,
     dayItineraryIndex?: number,
-    commuteInfo: CommuteInfo | null
+    commuteInfo: CommuteInfo | null,
+    viewOnly?: boolean
 }) {
 
     const dispatch = useAppDispatch();
@@ -203,8 +204,7 @@ export default function CommuteStack(props: {
     return (
         <div>
             {dialog}
-            {props.commuteInfo === null ?
-                <Button color='primary' variant="outlined" onClick={() => { setModifyCommute(true) }}>Add Transportaion</Button> :
+            {props.commuteInfo !== null ?
                 <div>
                     <Card sx={{ minWidth: 275 }}>
                         <CardActionArea onClick={() => { setModifyCommute(true) }}>
@@ -231,7 +231,11 @@ export default function CommuteStack(props: {
                             </CardContent>
                         </CardActionArea>
                     </Card>
-                </div>
+                </div> :
+                !props.viewOnly ?
+                    <Button color='primary' variant="outlined" onClick={() => { setModifyCommute(true) }}>Add Transportaion</Button> :
+                    <div>N/A</div>
+
             }
         </div>
     );
