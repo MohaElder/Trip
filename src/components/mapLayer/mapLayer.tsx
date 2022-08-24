@@ -9,25 +9,35 @@ import SearchIcon from '@mui/icons-material/Search';
 import { useState } from "react";
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
 import { GeoNode } from "../../data/GeoNode/GeoNode";
-import { getAutoCompleteLocationThunk, selectSearchResults } from "../../features/map/mapslice";
+import { clearSearchResult, getAutoCompleteLocationThunk, getDirectionThunk, selectSearchResults } from "../../features/map/mapslice";
 import { addInterestPoint } from "../../features/trip/tripslice";
 
 import './styles.css'
+import Menu from "@mui/material/Menu/Menu";
+import MenuItem from "@mui/material/MenuItem/MenuItem";
 
 
-export default function MapLayer(props: { segmentIndex: number }) {
+export default function MapLayer(props: { segmentIndex: number, interestPoints: Array<GeoNode> }) {
 
     const dispatch = useAppDispatch();
     const searchResults = useAppSelector(selectSearchResults);
 
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
     const [searchValue, setSearchValue] = useState('');
 
-    function handleSearch() {
+    function handleSearch(event: React.MouseEvent<HTMLButtonElement>) {
         dispatch(getAutoCompleteLocationThunk(searchValue));
+        setAnchorEl(event.currentTarget);
     }
 
     function handleSelectCoordinate(node: GeoNode) {
+        handleClose();
         dispatch(addInterestPoint({ segmentIndex: props.segmentIndex, node: node }));
+    }
+
+    function handleClose() {
+        dispatch(clearSearchResult());
     }
 
     return (
@@ -40,23 +50,44 @@ export default function MapLayer(props: { segmentIndex: number }) {
                         label="Search"
                         variant="outlined" />
                 </div>
-                <Button onClick={handleSearch} variant="contained" endIcon={<SearchIcon />}>Search</Button>
-
+                <Button onClick={(e) => { handleSearch(e) }} variant="contained" endIcon={<SearchIcon />}>Search</Button>
+                <Menu
+                    anchorEl={anchorEl}
+                    open={searchResults.length !== 0}
+                    onClose={handleClose}
+                    MenuListProps={{
+                        'aria-labelledby': 'search-button',
+                    }}
+                >
+                    {
+                        searchResults.map((res) => {
+                            return <ListItemButton>
+                                <ListItemText
+                                    onClick={() => {
+                                        handleSelectCoordinate(res)
+                                    }}
+                                    key={res.properties.id}
+                                    primary={res.properties.label}
+                                />
+                            </ListItemButton>
+                        })
+                    }
+                </Menu>
                 <Grid container spacing={2}>
                     <Grid item xs={12} md={6}>
                         <Typography sx={{ mt: 4, mb: 2 }} variant="h6" component="div">
-                            Search Result
+                            Interest Points
                         </Typography>
                         <List dense={true}>
                             {
-                                searchResults.map((res) => {
+                                props.interestPoints.map((point) => {
                                     return <ListItemButton>
                                         <ListItemText
                                             onClick={() => {
-                                                handleSelectCoordinate(res)
+                                                dispatch(getDirectionThunk())
                                             }}
-                                            key={res.properties.id}
-                                            primary={res.properties.label}
+                                            key={point.properties.id}
+                                            primary={point.properties.label}
                                         />
                                     </ListItemButton>
                                 })

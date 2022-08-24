@@ -1,3 +1,4 @@
+import Button from "@mui/material/Button/Button";
 import React, { Component, PropsWithChildren, useState } from "react";
 import { MapkitProvider, Map, useMap, Marker } from 'react-mapkit'
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
@@ -12,26 +13,35 @@ export default function TripMap(props: { interestPoints: Array<GeoNode> }) {
 
     const dispatch = useAppDispatch();
 
+    const [iPs, setiPs] = useState(props.interestPoints)
+
     const UseMapExample = () => {
-        const { map, setCenter, mapkit } = useMap()
+        const { map, mapProps, drawLine, setCenter, setRegion, setRotation, setVisibleMapRect, setTintColor, mapkit } = useMap()
+        console.log("refreshed")
+        setCenter([32.734179, -117.232955])
+        setRegion({
+            latitude: 32.734179,
+            longitude: -117.232955,
+            latitudeSpan: 0.5,
+            longitudeSpan: 0.5,
+        })
+
+        setVisibleMapRect(
+            [0, 0.2, 0.3, 0.3]
+        )
+
+        // setTintColor('#526649')
+
         return (
             <>
                 <div className='map'>
+                    <Button onClick={() => { console.log('aaa'); setRotation(50) }}>Debug</Button>
                     <Map
-                        tokenOrCallback={token}
-                        visibleMapRect={[0, 0.2, 0.3, 0.3]}
-                        center={[32.734179, -117.232955]} region={{
-                            latitude: 32.734179,
-                            longitude: -117.232955,
-                            latitudeSpan: 0.5,
-                            longitudeSpan: 0.5,
-                        }}
-                        tintColor={'#526649'}
+                        {...mapProps}
                     >
                         {
-                            props.interestPoints.map((node) => {
+                            iPs.map((node) => {
                                 return <Marker
-                                    
                                     latitude={node.coordinate.coordinates[1]}
                                     longitude={node.coordinate.coordinates[0]}
                                     title={node.properties.label}
@@ -46,9 +56,9 @@ export default function TripMap(props: { interestPoints: Array<GeoNode> }) {
     }
 
     return (
-
-        <UseMapExample />
-
+        <MapkitProvider tokenOrCallback={token}>
+            <UseMapExample />
+        </MapkitProvider>
     )
 }
 
