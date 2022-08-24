@@ -103,9 +103,9 @@ export default function TripSegment(props: { tripSegments: Array<TypeTripSegment
                     Budget
                 </Typography>
                 <BudgetChart tripSegment={props.tripSegments[activeTripSegmentIndex]} segmentIndex={activeTripSegmentIndex} />
-                <Typography variant="h5" gutterBottom component="div" sx={{ paddingTop: 5 }}>
+                {/* <Typography variant="h5" gutterBottom component="div" sx={{ paddingTop: 5 }}>
                     Map
-                </Typography>
+                </Typography> */}
                 {/* <MapLayer segmentIndex={activeTripSegmentIndex} interestPoints={props.tripSegments[activeTripSegmentIndex].interestPoints}></MapLayer>
                 <Map interestPoints={props.tripSegments[activeTripSegmentIndex].interestPoints}></Map> */}
             </div>
