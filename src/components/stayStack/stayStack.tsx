@@ -34,7 +34,8 @@ import { StayInfo } from '../../data/StayInfo/StayInfo';
 export default function StayStack(props: {
     segmentIndex: number,
     itineraryIndex: number,
-    stayInfo: StayInfo | null
+    stayInfo: StayInfo | null,
+    viewOnly?: boolean,
 }) {
 
     const dispatch = useAppDispatch();
@@ -150,11 +151,11 @@ export default function StayStack(props: {
                 </Button>
             </DialogActions></Dialog>
     return (
-        props.stayInfo == null ? <div>/</div> :
+        props.stayInfo === null ? <div>/</div> :
             <div>
                 {dialog}
                 <Card sx={{ minWidth: 275 }}>
-                    <CardActionArea onClick={() => { setModifyStay(true) }}>
+                    <CardActionArea onClick={() => { if (!props.viewOnly) { setModifyStay(true) } }}>
                         <CardContent>
                             <Grid>
                                 {stayMap.get(props.stayInfo.type)}
