@@ -42,6 +42,12 @@ export const tripSlice = createSlice({
             state.status = action.payload.status;
         },
 
+        readTrip: (state, action: PayloadAction<{ trip: Trip }>) => {
+            console.log(action.payload.trip)
+            state.Trip = action.payload.trip;
+            state.status = TripStatus.opened;
+        },
+
         updateTripInfo: (state, action: PayloadAction<{ name?: string, startDate?: string, endDate?: string }>) => {
             state.Trip.name = action.payload.name == undefined ? state.Trip.name : action.payload.name;
             state.Trip.startDate = action.payload.startDate == undefined ? state.Trip.startDate : action.payload.startDate;
@@ -492,7 +498,8 @@ export const tripSlice = createSlice({
 
 });
 
-export const { updateTripInfo, updateSegmentInfo, addNote, addNoteSegment,
+export const { updateTripInfo, readTrip,
+    updateSegmentInfo, addNote, addNoteSegment,
     updateNote, updateNoteSegment, deleteNote,
     deleteNoteSegment, addSegment, updateCommuteInfo,
     updateStayInfo, updateItinenary, updateDayItinenary,
