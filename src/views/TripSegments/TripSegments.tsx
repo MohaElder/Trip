@@ -106,8 +106,8 @@ export default function TripSegment(props: { tripSegments: Array<TypeTripSegment
                 <Typography variant="h5" gutterBottom component="div" sx={{ paddingTop: 5 }}>
                     Map
                 </Typography>
-                <MapLayer segmentIndex={activeTripSegmentIndex}></MapLayer>
-                <Map interestPoints={props.tripSegments[activeTripSegmentIndex].interestPoints}></Map>
+                {/* <MapLayer segmentIndex={activeTripSegmentIndex} interestPoints={props.tripSegments[activeTripSegmentIndex].interestPoints}></MapLayer>
+                <Map interestPoints={props.tripSegments[activeTripSegmentIndex].interestPoints}></Map> */}
             </div>
         </Container>
     );
