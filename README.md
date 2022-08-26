@@ -12,6 +12,8 @@ A Trip planner that **actually** does trip planning.
 - [How Does Let's Plan A Trip help with trip planning](#how-does-lets-plan-a-trip-help-with-trip-planning)
 - [Features](#features)
 - [Roadmap](#roadmap)
+- [Running from the source code](#running-from-the-source-code)
+- [Contributing](#contributing)
 - [Contact Me](#contact-me)
 
 ## Brief
@@ -65,6 +67,50 @@ This section displays the list of ongoing developments on the project.
 - Fix Date Bug of trip date can be edited out of trip segments' bounds 🛠️
 - Map ⚠️(Map is kind of awkward right now, I'm not sure how it should appear in the trip planner, will come back and update once I have a better idea)
 - Checklist 💭
+
+## Specifications
+
+The project is currently pure front end, built with React + TypeScript + Redux.
+
+List of used libraries:
+
+- [react-draft-wysiwyg](https://github.com/jpuri/react-draft-wysiwyg) for the note editor.
+- apple map for map(still developing)
+- [mui](https://mui.com/) for UI
+- [js-file-download](https://github.com/kennethjiang/js-file-download) for file saving
+- [react-file-reader-input](https://github.com/ngokevin/react-file-reader-input) for file reading
+
+## Running from the source code
+
+```bash
+git clone https://github.com/MohaElder/Trip.git
+
+cd Trip
+
+npm install
+
+# or
+
+yarn
+
+#pick one of them👆
+
+npm start
+
+#the project should be running at http://localhost:3000
+
+```
+
+## Deploying the project
+
+```bash
+
+npm run build
+
+```
+
+## Contributing
+I am open to any PRs!
 
 ## Contact Me
 
