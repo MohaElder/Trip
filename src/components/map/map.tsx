@@ -64,4 +64,3 @@ export default function TripMap(props: { interestPoints: Array<GeoNode> }) {
 }
 
 //center={[37.415, -122.048333]}
-//tokenOrCallback={'***REMOVED***'} 

@@ -101,4 +101,4 @@ export default function MapLayer(props: { segmentIndex: number, interestPoints: 
 }
 
 //center={[37.415, -122.048333]}
-//tokenOrCallback={'***REMOVED***'} 
+//tokenOrCallback={'eyJhbGciOiJIUzI1NiIsImtpZCI6IkxBOVlSNFcyMjQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJOSFhWVFlCUU1VIiwiaWF0IjoxNDM3MTc5MDM2LCJleHAiOjE0OTMyOTgxMDB9.slpGCPIkAvxBFct_CyT87roI0vovJdQpPWCrpDjjloI'} 
