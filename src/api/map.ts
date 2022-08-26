@@ -1,6 +1,6 @@
 import { GeoNode } from "../data/GeoNode/GeoNode";
 
-const api_key = '5b3ce3597851110001cf624848973c684d0342fc86f77ec0aaeb36af';
+const api_key = '';
 const api_url = 'https://api.openrouteservice.org';
 
 export function getAutoCompleteLocation(str: string) {
