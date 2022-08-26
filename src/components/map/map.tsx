@@ -7,9 +7,10 @@ import { getAutoCompleteLocationThunk } from "../../features/map/mapslice";
 
 import './styles.css'
 
+//leave for the future
 export default function TripMap(props: { interestPoints: Array<GeoNode> }) {
 
-    const token = '***REMOVED***'
+    const token = ''
 
     const dispatch = useAppDispatch();
 
