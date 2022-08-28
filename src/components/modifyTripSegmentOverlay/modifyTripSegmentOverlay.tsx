@@ -46,11 +46,23 @@ export default function ModifyTripSegmentOverlay(props: { segment: TripSegment, 
     tripStatus == TripStatus.creatingSegment ? new Date() :
       new Date(props.segment.startDate),
   );
+  useEffect(() => {
+    setStartDate(
+      tripStatus == TripStatus.editingSegment ?
+        new Date(props.segment.startDate) :
+        new Date())
+  }, [tripStatus]);
 
   const [endDate, setEndDate] = useState<Date | null>(
     tripStatus == TripStatus.creatingSegment ? new Date() :
       new Date(props.segment.endDate),
   );
+  useEffect(() => {
+    setEndDate(
+      tripStatus == TripStatus.editingSegment ?
+        new Date(props.segment.endDate) :
+        new Date())
+  }, [tripStatus]);
 
   const [numOfDays, setNumOfDays] =
     useState<number>(startDate !== null && endDate !== null ?

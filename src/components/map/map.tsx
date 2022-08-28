@@ -51,7 +51,7 @@ export default function TripMap(props: { interestPoints: Array<GeoNode> }) {
                             })
                         }
                     </Map>
-                </div>
+                </div>i
             </>
         )
     }
