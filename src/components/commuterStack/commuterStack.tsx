@@ -148,7 +148,7 @@ export default function CommuteStack(props: {
                                         setCode(e.target.value);
                                     }}
                                     autoFocus
-                                    label="Transportaion Code"
+                                    label="Transportation Code"
                                     fullWidth
                                     variant="standard"
                                 />
@@ -233,7 +233,7 @@ export default function CommuteStack(props: {
                     </Card>
                 </div> :
                 !props.viewOnly ?
-                    <Button color='primary' variant="outlined" onClick={() => { setModifyCommute(true) }}>Add Transportaion</Button> :
+                    <Button color='primary' variant="outlined" onClick={() => { setModifyCommute(true) }}>Add Transportation</Button> :
                     <div>N/A</div>
 
             }
