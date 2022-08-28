@@ -49,6 +49,29 @@ export const tripSlice = createSlice({
         },
 
         updateTripInfo: (state, action: PayloadAction<{ name?: string, startDate?: string, endDate?: string }>) => {
+
+
+            function validNewDates(startDate: string, endDate: string): string {
+                let warnStr = '';
+                let sd = new Date(startDate);
+                let ed = new Date(endDate)
+                state.Trip.tripSegments.forEach((segment) => {
+                    if (sd > new Date(segment.startDate) || ed < new Date(segment.endDate)) {
+                        warnStr += segment.name + ', '
+                    }
+                })
+                return warnStr.substring(0, warnStr.length - 2);
+            }
+            if (action.payload.startDate !== undefined && action.payload.endDate !== undefined) {
+                let msg = validNewDates(action.payload.startDate, action.payload.endDate)
+                if (msg !== '') {
+                    state.warnMsg = "Your proposed trip date has date conflicts with the following \
+                    trip segments: " + msg + ". Please resolve these conflicts or propose a trip date \
+                    that is wider than the current date.";
+                    state.warn = true;
+                    return;
+                }
+            }
             state.Trip.name = action.payload.name == undefined ? state.Trip.name : action.payload.name;
             state.Trip.startDate = action.payload.startDate == undefined ? state.Trip.startDate : action.payload.startDate;
             state.Trip.endDate = action.payload.endDate == undefined ? state.Trip.endDate : action.payload.endDate;

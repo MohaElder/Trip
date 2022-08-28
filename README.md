@@ -64,7 +64,7 @@ This section displays the list of ongoing developments on the project.
 💭: planned 
 
 - Fix Date Bug of going over the pages and the date messes use ✅
-- Fix Date Bug of trip date can be edited out of trip segments' bounds 🛠️
+- Fix Date Bug of trip date can be edited out of trip segments' bounds ✅
 - Map ⚠️(Map is kind of awkward right now, I'm not sure how it should appear in the trip planner, will come back and update once I have a better idea)
 - Checklist 💭
 

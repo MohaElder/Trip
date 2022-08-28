@@ -15,6 +15,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import FileReaderInput from 'react-file-reader-input';
+import WarningPopUp from '../../components/warningPopUp/warningPopUp';
 
 function WelcomeOverlay() {
 
@@ -34,7 +35,9 @@ function WelcomeOverlay() {
     new Date(trip.endDate),
   );
 
-  const [numOfDays, setNumOfDays] = useState<number>(startDate !== null && endDate !== null ? Math.round(millisecondsToDays(endDate.getTime() - startDate.getTime()) * 10) / 10 : 0);
+  const [numOfDays, setNumOfDays] = 
+  useState<number>(startDate !== null && endDate !== null ? Math.round(millisecondsToDays(endDate.getTime() - startDate.getTime()) * 10) / 10 : 0);
+  
 
   const [clicked, setClicked] = useState(false)
 
@@ -73,6 +76,7 @@ function WelcomeOverlay() {
 
   return (
     <Dialog open={tripStatus == TripStatus.welcome || tripStatus == TripStatus.editing} fullScreen={fullScreen}>
+      <WarningPopUp />  
       <DialogTitle sx={{ textAlign: 'center', paddingTop: 5 }}>
         <FileReaderInput as="binary" id="my-file-input"
           onChange={handleReadFile}>
@@ -98,9 +102,6 @@ function WelcomeOverlay() {
               value={startDate}
               onChange={(newDate) => {
                 setStartDate(newDate);
-                if (newDate != null) {
-                  setEndDate(new Date(newDate.getTime() + daysToMilliseconds(numOfDays)))
-                }
               }}
               renderInput={(params) => <TextField {...params} />}
             />
