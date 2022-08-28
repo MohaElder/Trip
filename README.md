@@ -1,5 +1,7 @@
 # Let's Plan A Trip
 
+![banner](./doc_assets/Banner.jpg)
+
 A Trip planner that **actually** does trip planning. 
 
 [Let's Plan A Trip now!](https://lpat.netlify.app/)

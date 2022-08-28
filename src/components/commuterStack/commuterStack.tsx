@@ -235,7 +235,6 @@ export default function CommuteStack(props: {
                 !props.viewOnly ?
                     <Button color='primary' variant="outlined" onClick={() => { setModifyCommute(true) }}>Add Transportation</Button> :
                     <div>N/A</div>
-
             }
         </div>
     );

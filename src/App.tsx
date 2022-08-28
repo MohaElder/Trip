@@ -22,7 +22,7 @@ import swanseaBold from './font/Swansea/SwanseaBold.ttf'
 import swanseaBoldItalic from './font/Swansea/SwanseaBoldItalic.ttf'
 import swanseaItalic from './font/Swansea/SwanseaItalic.ttf'
 import AppBar from "@mui/material/AppBar/AppBar";
-import Toolbar from "@mui/material/Toolbar/Toolbar";  
+import Toolbar from "@mui/material/Toolbar/Toolbar";
 
 declare module '@mui/material/styles' {
   interface Theme {
@@ -158,9 +158,11 @@ function App() {
         </div>
         <AppBar position="relative" color="primary" sx={{ top: 'auto', bottom: 0 }}>
           <Toolbar>
-           <div className="footer-content">
-            Developed by MohaElder with ❤ and some overlanding spirit ⛰
-           </div>
+            <div className="footer-content">
+              Made by&nbsp;<a style={{ color: 'white' }} href="https://mohaelder.github.io/me">MohaElder</a>
+              &nbsp;with ❤️ and some overlanding spirit 🏔️;
+              &nbsp;<a style={{ color: 'white' }} href="https://github.com/MohaElder/Trip">source code</a>
+            </div>
           </Toolbar>
         </AppBar>
       </Router >
