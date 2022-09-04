@@ -223,6 +223,16 @@ export const tripSlice = createSlice({
 
             state.Trip.tripSegments[action.payload.tripSegmentIndex]
                 .itineraries.splice(action.payload.itinenaryIndex, 1)
+
+            for (let i = action.payload.itinenaryIndex; i < state.Trip.tripSegments[action.payload.tripSegmentIndex]
+                .itineraries.length; ++i) {
+                let date = new Date(state.Trip.tripSegments[action.payload.tripSegmentIndex]
+                    .itineraries[i].date)
+                date.setDate(date.getDate() - 1)
+                state.Trip.tripSegments[action.payload.tripSegmentIndex]
+                    .itineraries[i].date = date.toString();
+
+            }
         },
 
         deleteDayItinenary: (state, action: PayloadAction<{

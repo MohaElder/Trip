@@ -35,9 +35,9 @@ function WelcomeOverlay() {
     new Date(trip.endDate),
   );
 
-  const [numOfDays, setNumOfDays] = 
-  useState<number>(startDate !== null && endDate !== null ? Math.round(millisecondsToDays(endDate.getTime() - startDate.getTime()) * 10) / 10 : 0);
-  
+  const [numOfDays, setNumOfDays] =
+    useState<number>(startDate !== null && endDate !== null ? 1 + Math.round(millisecondsToDays(endDate.getTime() - startDate.getTime()) * 10) / 10 : 0);
+
 
   const [clicked, setClicked] = useState(false)
 
@@ -60,7 +60,7 @@ function WelcomeOverlay() {
       const [e, file] = result;
       file.text()
         .then(
-          (res: string) => { console.log(JSON.parse(res)); dispatch(readTrip({trip: JSON.parse(res)})) })
+          (res: string) => { console.log(JSON.parse(res)); dispatch(readTrip({ trip: JSON.parse(res) })) })
     });
   }
 
@@ -76,13 +76,13 @@ function WelcomeOverlay() {
 
   return (
     <Dialog open={tripStatus == TripStatus.welcome || tripStatus == TripStatus.editing} fullScreen={fullScreen}>
-      <WarningPopUp />  
+      <WarningPopUp />
       <DialogTitle sx={{ textAlign: 'center', paddingTop: 5 }}>
         <FileReaderInput as="binary" id="my-file-input"
           onChange={handleReadFile}>
           <span className='open-text'>OPEN</span> OR CREATE TRIP👇
         </FileReaderInput>
-       
+
       </DialogTitle>
       <DialogContent sx={{ paddingLeft: 10, paddingRight: 10 }}>
         <Stack spacing={4}>
@@ -102,6 +102,9 @@ function WelcomeOverlay() {
               value={startDate}
               onChange={(newDate) => {
                 setStartDate(newDate);
+                if (endDate != null && newDate != null) {
+                  setEndDate(new Date(newDate.getTime() + daysToMilliseconds(-1 + numOfDays)))
+                }
               }}
               renderInput={(params) => <TextField {...params} />}
             />
@@ -112,7 +115,8 @@ function WelcomeOverlay() {
               //conversion from string to number: https://stackoverflow.com/a/14668510/15466075
               setNumOfDays(+e.target.value);
               if (startDate != null) {
-                setEndDate(new Date(startDate.getTime() + daysToMilliseconds(+e.target.value)))
+                console.log("setting")
+                setEndDate(new Date(startDate.getTime() + daysToMilliseconds(-1 + +e.target.value)))
               }
             }}
             value={numOfDays}
@@ -128,7 +132,7 @@ function WelcomeOverlay() {
               onChange={(newDate) => {
                 setEndDate(newDate)
                 if (newDate != null && startDate != null) {
-                  setNumOfDays(Math.round(millisecondsToDays(newDate.getTime() - startDate.getTime()) * 10) / 10)
+                  setNumOfDays(Math.round(millisecondsToDays(newDate.getTime() - startDate.getTime()) * 10) / 10 + 1)
                 }
               }}
               renderInput={(params) => <TextField {...params} />}
