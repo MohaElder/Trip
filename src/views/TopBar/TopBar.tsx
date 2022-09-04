@@ -54,8 +54,14 @@ export default function TopBar(props: { segments: Array<TripSegment> }) {
                     >
                         <span className={activePage == '/' ? 'underlined' : ''}>Dashboard</span>
                     </Typography>
-                </Box>
-                <Box sx={{ flexGrow: 25, display: { xs: 'none', md: 'flex' } }}>
+                    <Typography
+                        className='fake-btn'
+                        variant='h5'
+                        onClick={() => { handleNav('/') }}
+                        sx={{ my: 2, fontWeight: 600, marginRight: 2 }}
+                    >
+                        |
+                    </Typography>
                     {
                         props.segments.map((segment) => {
                             return <Typography
@@ -73,6 +79,7 @@ export default function TopBar(props: { segments: Array<TripSegment> }) {
                             </Typography>
                         })
                     }
+
                 </Box>
                 <Typography
                     className='fake-btn'
