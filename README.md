@@ -71,7 +71,7 @@ This section displays the list of ongoing developments on the project.
 - Checklist 🛠️
 - Fix time picker cannot input 2 digit minutes 🛠️
 - Fix note section's placeholder does not disappear when list is enabled 💭
-- Change the segment picker to scrollable NavBar 💭
+- Change the segment picker to scrollable NavBar ✅
 
 ## Specifications
 
