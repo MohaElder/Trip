@@ -84,6 +84,7 @@ List of used libraries:
 - [mui](https://mui.com/) for UI
 - [js-file-download](https://github.com/kennethjiang/js-file-download) for file saving
 - [react-file-reader-input](https://github.com/ngokevin/react-file-reader-input) for file reading
+- [react-to-print](https://github.com/gregnb/react-to-print) for printing the trip
 
 ## Running from the source code
 
