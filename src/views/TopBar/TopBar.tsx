@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { MutableRefObject, ReactInstance, useCallback, useRef, useState } from 'react';
 
 import { useNavigate } from "react-router-dom";
 
@@ -16,8 +16,9 @@ import { selectTrip, selectActiveSegmentIndex, setActiveSegmentIndex } from '../
 import fileDownload from 'js-file-download';
 import { TripSegment } from '../../data/Trip/Trip';
 import { useDispatch } from 'react-redux';
+import { useReactToPrint } from 'react-to-print';
 
-export default function TopBar(props: { segments: Array<TripSegment> }) {
+export default function TopBar(props: { segments: Array<TripSegment>, printComponent: MutableRefObject<null> }) {
 
     const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
     const [activePage, setActivePage] = useState('/')
@@ -26,6 +27,21 @@ export default function TopBar(props: { segments: Array<TripSegment> }) {
     const activeSegmentIndex = useAppSelector(selectActiveSegmentIndex);
 
     const dispatch = useDispatch();
+
+    const reactToPrintContent = useCallback(() => {
+        return props.printComponent.current;
+    }, [props.printComponent.current]);
+
+    const handlePrint = useReactToPrint({
+        content: reactToPrintContent,
+        documentTitle: 'printed_' + trip.name,
+        pageStyle: `
+          @media print {
+            @page { size: landscape; }
+            
+          }`,
+        removeAfterPrint: true
+    });
 
     const handleNav = (path: string) => {
         navigate(path, { replace: true })
@@ -81,6 +97,15 @@ export default function TopBar(props: { segments: Array<TripSegment> }) {
                     }
 
                 </Box>
+                <Typography
+                    className='fake-btn'
+                    variant='h5'
+                    sx={{ my: 2, fontWeight: 600, marginRight: 5 }}
+                >
+                    <span className={activePage == '/save' ? 'underlined' : ''} onClick={() => {
+                        handlePrint()
+                    }}>Print</span>
+                </Typography>
                 <Typography
                     className='fake-btn'
                     variant='h5'

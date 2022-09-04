@@ -23,6 +23,7 @@ import swanseaBoldItalic from './font/Swansea/SwanseaBoldItalic.ttf'
 import swanseaItalic from './font/Swansea/SwanseaItalic.ttf'
 import AppBar from "@mui/material/AppBar/AppBar";
 import Toolbar from "@mui/material/Toolbar/Toolbar";
+import { useRef } from "react";
 
 declare module '@mui/material/styles' {
   interface Theme {
@@ -38,14 +39,10 @@ declare module '@mui/material/styles' {
   }
 }
 
-interface PaletteColor {
-  light?: string;
-  main: string;
-  dark?: string;
-  contrastText?: string;
-}
-
 function App() {
+
+
+
   const trip = useAppSelector(selectTrip);
   const tripStatus = useAppSelector(selectTripStatus);
 
@@ -141,17 +138,22 @@ function App() {
     },
   });
 
-  return (
-    <ThemeProvider theme={theme}>
+  const componentRef = useRef(null);
+
+  const ret = (
+    <ThemeProvider theme={theme} >
       <Router>
         <WelcomeOverlay />
-        <TopBar segments={trip.tripSegments} />
-        <div>
+        <TopBar segments={trip.tripSegments} printComponent={componentRef} />
+        <div ref={componentRef}>
           <Routes>
             <Route path="/" element={<Dashboard trip={trip} />}>
             </Route>
             <Route path="/segment" element={tripStatus === 'welcome' ?
-              <Dashboard trip={trip} /> :
+              <div>
+                <Dashboard trip={trip} />
+              </div>
+              :
               <TripSegment tripSegments={trip.tripSegments} />}>
             </Route>
           </Routes>
@@ -168,6 +170,8 @@ function App() {
       </Router >
     </ThemeProvider>
   );
+
+  return ret;
 }
 
 
