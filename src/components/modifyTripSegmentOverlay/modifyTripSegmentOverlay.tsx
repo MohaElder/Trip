@@ -66,7 +66,7 @@ export default function ModifyTripSegmentOverlay(props: { segment: TripSegment, 
 
   const [numOfDays, setNumOfDays] =
     useState<number>(startDate !== null && endDate !== null ?
-      Math.round(
+      1 + Math.round(
         millisecondsToDays(endDate.getTime() - startDate.getTime()) * 10) / 10 : 0);
 
   const [clicked, setClicked] = useState(false)
@@ -140,7 +140,7 @@ export default function ModifyTripSegmentOverlay(props: { segment: TripSegment, 
               onChange={(newDate) => {
                 setStartDate(newDate);
                 if (newDate != null) {
-                  setEndDate(new Date(newDate.getTime() + daysToMilliseconds(numOfDays)))
+                  setEndDate(new Date(newDate.getTime() + daysToMilliseconds(-1 + numOfDays)))
                 }
               }}
               renderInput={(params) => <TextField {...params} />}
@@ -152,7 +152,7 @@ export default function ModifyTripSegmentOverlay(props: { segment: TripSegment, 
               //conversion from string to number: https://stackoverflow.com/a/14668510/15466075
               setNumOfDays(+e.target.value);
               if (startDate != null) {
-                setEndDate(new Date(startDate.getTime() + daysToMilliseconds(+e.target.value)))
+                setEndDate(new Date(startDate.getTime() + daysToMilliseconds(-1 + +e.target.value)))
               }
             }}
             value={numOfDays}
@@ -168,7 +168,7 @@ export default function ModifyTripSegmentOverlay(props: { segment: TripSegment, 
               onChange={(newDate) => {
                 setEndDate(newDate)
                 if (newDate != null && startDate != null) {
-                  setNumOfDays(Math.round(millisecondsToDays(newDate.getTime() - startDate.getTime()) * 10) / 10)
+                  setNumOfDays(Math.round(millisecondsToDays(newDate.getTime() - startDate.getTime()) * 10) / 10 + 1)
                 }
               }}
               renderInput={(params) => <TextField {...params} />}
