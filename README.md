@@ -20,17 +20,28 @@ A Trip planner that **actually** does trip planning.
 
 ## Brief
 
-"Let's Plan A Trip" is a trip planner that **focuses on planning the trip**. Unlike most other trip planning apps that emphasizes on route planning, providing you a fancy map and charging you for exporting their route into Google Maps, Let's Plan A Trip's goal is to really help you plan a trip by providing you a variety of handy tools that I the author use to plan my trips in a elegant and neat format.
+"Let's Plan A Trip" is a trip planner that **focuses on planning the trip**. Unlike most other trip planning apps that emphasizes on route planning, providing you a fancy map and charging you for exporting their route into Google Maps, Let's Plan A Trip's goal is to really help you plan a trip by providing you a variety of handy tools that I the author use to plan my trips in an elegant and neat format.
 
 and it's **free**~
 
+## Features
+
+1. Unlimited Wysiwyg Notes(for the dashboard and each trip segments)
+2. Trip Segmentation
+3. An Itinenary Calendar that **supports the itinenary of each day**, includes information of: Start, End, Brief, Transportation, Stay, side note, and the time specific itinenary of that day
+4. Transportation Info that includes transportation type, departure & arrival time, transportation number & station address(both optional)
+5. Stay Info that includes confirmation link(optional), name, address, cost, and stay type. It automatically updates the cost to the budget table.
+6. A budget table that supports quantity and sum calculation.
+7. An overview of the whole trip's calendar from the Dashboard view.
+8. An overview of the whole trip's budget from the Dashboard view.
+
 ## How Does Let's Plan A Trip help with trip planning
 
-Let's Plan A Trip is a **Note Oriented planning app**. When planning a trip, you start with writing stuff on notes(s): places that you want to visit, things that you would like to do, visa concerns, etc. 
+Let's Plan A Trip is a **Note Oriented Planning App**. When planning a trip, you start with writing stuff on notes(s): places that you want to visit, things that you would like to do, visa concerns, etc. 
 
 ![note](./doc_assets/A.png)
 
-Once you get some ideas for your trip, you can start planning by creating **trip segments**. The purpose of trip segment is to better organize your trip plan by splitting portions of them into segments. If you are planning a trip less than a week, you probably just need one segment that has been automatically created for you. But if you are planning some grand trips(like a 1 month road trip to Alaska), you will find splitting the trip into segments really convienient when planning(and when looking at it).
+Once you get some ideas for your trip, you can start planning by creating **trip segments**. The purpose of trip segment is to better organize your trip plan by splitting portions of them into segments. If you are planning a trip less than a week, you probably just need one segment that will be automatically created for you. But if you are planning some grand trips(like a 1 month road trip to Alaska), you will find splitting the trip into segments really convienient when planning(and when looking at it).
 
 ![segment](./doc_assets/B.png)
 
@@ -41,17 +52,6 @@ Plus, Let's Plan A Trip has a pretty good Calendar:
 ![calendar_2](./doc_assets/D.png)
 
 Lastly, Let's Plan A Trip does not require login, you just go to the website, and you can click the save button to **save the trip file locally** and edit it next time.
-
-## Features
-
-1. Unlimited Wysiwyg Note(for the dashboard and each trip segments)
-2. Trip Segmentation
-3. An Itinenary Calendar that **supports the itinenary of each day**, includes information of: Start, End, Brief, Transportation, Stay, side note, and the time specific itinenary of that day
-4. Transportation Info that includes transportation type, departure & arrival time, transportation number & station address(both optional)
-5. Stay Info that includes confirmation link(optional), name, address, cost, and stay type. It automatically updates the cost to the budget table.
-6. A budget table that supports quantity and sum calculation.
-7. An overview of the whole trip's calendar from the Dashboard view.
-8. An overview of the whole trip's budget from the Dashboard view.
 
 ## Roadmap
 
