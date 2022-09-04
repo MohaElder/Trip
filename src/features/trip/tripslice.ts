@@ -78,8 +78,20 @@ export const tripSlice = createSlice({
             state.status = TripStatus.created;
         },
 
-        setActiveSegmentIndex: (state, action: PayloadAction<{ index: number }>) => {
-            state.activeSegmentIndex = action.payload.index;
+        setActiveSegmentIndex: (state, action: PayloadAction<{ index?: number, id?: string }>) => {
+            if (action.payload.index !== undefined) {
+                state.activeSegmentIndex = action.payload.index;
+            }
+            else if (action.payload.id !== undefined) {
+                let index = state.Trip.tripSegments.findIndex((segment) => {
+                    return segment.id === action.payload.id;
+                })
+
+                if(index !== -1){
+                    state.activeSegmentIndex = index;
+                }
+            }
+
         },
 
         updateSegmentInfo: (state, action: PayloadAction<{ name?: string, startDate?: string, endDate?: string, index: number }>) => {

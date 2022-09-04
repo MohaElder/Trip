@@ -115,7 +115,6 @@ function WelcomeOverlay() {
               //conversion from string to number: https://stackoverflow.com/a/14668510/15466075
               setNumOfDays(+e.target.value);
               if (startDate != null) {
-                console.log("setting")
                 setEndDate(new Date(startDate.getTime() + daysToMilliseconds(-1 + +e.target.value)))
               }
             }}

@@ -12,15 +12,20 @@ import logo from '../../assets/logo.svg'
 import Typography from '@mui/material/Typography/Typography';
 
 import { useAppSelector } from '../../app/hooks';
-import { selectTrip } from '../../features/trip/tripslice';
+import { selectTrip, selectActiveSegmentIndex, setActiveSegmentIndex } from '../../features/trip/tripslice';
 import fileDownload from 'js-file-download';
+import { TripSegment } from '../../data/Trip/Trip';
+import { useDispatch } from 'react-redux';
 
-export default function TopBar() {
+export default function TopBar(props: { segments: Array<TripSegment> }) {
 
     const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
     const [activePage, setActivePage] = useState('/')
     const navigate = useNavigate()
     const trip = useAppSelector(selectTrip);
+    const activeSegmentIndex = useAppSelector(selectActiveSegmentIndex);
+
+    const dispatch = useDispatch();
 
     const handleNav = (path: string) => {
         navigate(path, { replace: true })
@@ -41,7 +46,6 @@ export default function TopBar() {
             </div>
             <Toolbar disableGutters sx={{ paddingLeft: 5 }}>
                 <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                    {/* <Link to="/"> */}
                     <Typography
                         className='fake-btn'
                         variant='h5'
@@ -50,17 +54,25 @@ export default function TopBar() {
                     >
                         <span className={activePage == '/' ? 'underlined' : ''}>Dashboard</span>
                     </Typography>
-                    {/* </Link>
-                    <Link to="/segment"> */}
-                    <Typography
-                        className='fake-btn'
-                        variant='h5'
-                        onClick={() => { handleNav('/segment') }}
-                        sx={{ my: 2, fontWeight: 600 }}
-                    >
-                        <span className={activePage == '/segment' ? 'underlined' : ''}>Trip Segment</span>
-                    </Typography>
-                    {/* </Link> */}
+                </Box>
+                <Box sx={{ flexGrow: 25, display: { xs: 'none', md: 'flex' } }}>
+                    {
+                        props.segments.map((segment) => {
+                            return <Typography
+                                className='fake-btn'
+                                variant='h5'
+                                key={segment.id}
+                                onClick={() => { dispatch(setActiveSegmentIndex({ id: segment.id })); handleNav('/segment'); }}
+                                sx={{ my: 2, fontWeight: 600, marginRight: 2 }}
+                            >
+                                <span className=
+                                    {activePage === '/segment' &&
+                                        trip.tripSegments[activeSegmentIndex].id === segment.id
+                                        ? 'underlined' : ''}>
+                                    {segment.name}</span>
+                            </Typography>
+                        })
+                    }
                 </Box>
                 <Typography
                     className='fake-btn'

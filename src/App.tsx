@@ -145,7 +145,7 @@ function App() {
     <ThemeProvider theme={theme}>
       <Router>
         <WelcomeOverlay />
-        <TopBar />
+        <TopBar segments={trip.tripSegments} />
         <div>
           <Routes>
             <Route path="/" element={<Dashboard trip={trip} />}>

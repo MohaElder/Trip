@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from "react-router-dom";
 
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
 import { addSegment, setTripStatus, TripStatus, selectActiveSegmentIndex, setActiveSegmentIndex } from '../../features/trip/tripslice';
@@ -23,6 +24,7 @@ import BudgetChart from '../../components/budgetChart/budgetChart';
 import WarningPopUp from '../../components/warningPopUp/warningPopUp';
 import Map from '../../components/map/map';
 import MapLayer from '../../components/mapLayer/mapLayer';
+import Stack from '@mui/system/Stack/Stack';
 
 export default function TripSegment(props: { tripSegments: Array<TypeTripSegment> }) {
 
@@ -48,18 +50,6 @@ export default function TripSegment(props: { tripSegments: Array<TypeTripSegment
         return (startDate.getMonth() + 1) + '.' + startDate.getDate() + ' - '
             + (endDate.getMonth() + 1) + '.' + endDate.getDate()
     }
-
-    const TripSegmentMenus =
-        <Select
-            value={activeTripSegmentIndex.toString()}
-            onChange={handleChangeActiveTripSegment}
-            autoWidth
-            label="Active Segment"
-        >
-            {props.tripSegments.map((segment, idx) =>
-                <MenuItem value={idx} key={segment.id}>{segment.name}</MenuItem>)}
-        </Select>
-
     function handleEditSegment() {
         dispatch(setTripStatus({ status: TripStatus.editingSegment }));
     }
@@ -71,26 +61,19 @@ export default function TripSegment(props: { tripSegments: Array<TypeTripSegment
             <ModifyTripSegmentOverlay segment={props.tripSegments[activeTripSegmentIndex]} segmentIndex={activeTripSegmentIndex} />
             <Typography variant="h3" sx={{ fontWeight: 600 }} component="div">{props.tripSegments[activeTripSegmentIndex].name}</Typography>
             <Typography variant="h5" gutterBottom component="div">{parseDate()}</Typography>
-            <Button sx={{ marginBottom: 5 }} variant="contained"
-                endIcon={<EditIcon />} color="secondary" onClick={() => { handleEditSegment() }}>
-                EDIT SEGMENT
-            </Button>
+            <Stack sx={{marginBottom: '20px'}} direction="row" spacing={2}>
+                <Button variant="contained"
+                    endIcon={<EditIcon />} color="secondary" onClick={() => { handleEditSegment() }}>
+                    EDIT SEGMENT
+                </Button>
+                <Button variant="contained"
+                    endIcon={<AddIcon />} color="primary"
+                    onClick={() => { handleAddSegment() }}>
+                    NEW SEGMENT
+                </Button>
+            </Stack>
             <div>
-                <Grid>
-                    <FormControl sx={{ marginTop: 1, marginBottom: 1, minWidth: 200 }}>
-                        <InputLabel>Active Segment</InputLabel>
-                        {TripSegmentMenus}
-                    </FormControl>
-                </Grid>
-                <div className='button-container'>
-                    <Grid  >
-                        <Button sx={{ marginBottom: 5 }} variant="contained"
-                            endIcon={<AddIcon />} color="primary"
-                            onClick={() => { handleAddSegment() }}>
-                            NEW SEGMENT
-                        </Button>
-                    </Grid>
-                </div>
+
                 <Typography variant="h5" gutterBottom component="div">
                     Brainstorm Section
                 </Typography>
