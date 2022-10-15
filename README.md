@@ -69,8 +69,9 @@ This section displays the list of ongoing developments on the project.
 - Fix Date Bug of trip date can be edited out of trip segments' bounds ✅
 - Map ⚠️(Map is kind of awkward right now, I'm not sure how it should appear in the trip planner, will come back and update once I have a better idea)
 - Checklist 🛠️
-- Fix time picker cannot input 2 digit minutes 🛠️
+- Fix time picker cannot input 2 digit minutes 💭
 - Fix note section's placeholder does not disappear when list is enabled 💭
+- Add budget support for Transportation 🛠️
 - Change the segment picker to scrollable NavBar ✅
 
 ## Specifications
